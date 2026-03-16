@@ -2,7 +2,9 @@ import { z } from 'zod';
 
 // Support both local and remote API with automatic fallback
 const REMOTE_API_URL = import.meta.env.VITE_API_URL;
-const LOCAL_API_URL = 'http://localhost:5001/api';
+//const LOCAL_API_URL = 'http://localhost:5001/api';
+// src/services/api.ts (ya websocket.ts ya jo bhi file hai)
+export const API_BASE_URL = "https://recreative-noncredulously-esteban.ngrok-free.dev";
 
 // Start with remote if available, otherwise local
 let API_URL = REMOTE_API_URL || LOCAL_API_URL;
