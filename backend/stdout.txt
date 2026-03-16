@@ -1,0 +1,7 @@
+
+============================================================
+VIDEO SERVICE INITIALIZATION
+============================================================
+[VIDEO SERVICE] AI models disabled - focusing on Whisper for Urdu subtitles
+ * Serving Flask app 'app'
+ * Debug mode: on

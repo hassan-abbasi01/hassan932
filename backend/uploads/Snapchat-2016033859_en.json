@@ -1,0 +1,16 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 5.62,
+      "text": "Thanks for watching!",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

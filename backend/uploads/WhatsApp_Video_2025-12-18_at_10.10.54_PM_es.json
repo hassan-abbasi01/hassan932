@@ -1,0 +1,48 @@
+{
+  "language": "es",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 2.0,
+      "text": "¿Quieres que yo te quede en Berlín?",
+      "language": "es",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 3.42,
+      "end": 6.78,
+      "text": "Si no te quedas fuera de Berlín, no lo haré de nuevo.",
+      "language": "es",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 7.06,
+      "end": 8.8,
+      "text": "Los rostros ya se han despedido.",
+      "language": "es",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 9.32,
+      "end": 10.84,
+      "text": "¡Ah, no! ¡Yo lo sé!",
+      "language": "es",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 11.92,
+      "end": 12.36,
+      "text": "¡A ver!",
+      "language": "es",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

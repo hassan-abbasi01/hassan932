@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Upload, CheckCircle, Video, Scissors, Type, Volume2, Brain, Wand2, Settings, Download, Share2, MoreHorizontal, X, Clock, Zap, Play, Pause, VolumeX, Mic, MicOff } from 'lucide-react';
+import { Upload, CheckCircle, Video, Scissors, Type, Volume2, Wand2, Settings, Download, Share2, MoreHorizontal, X, Clock, Play, Pause, VolumeX, Mic, MicOff } from 'lucide-react';
 import VideoEditor from '../components/VideoEditor';
 
 const Editor = () => {
@@ -27,7 +27,6 @@ const Editor = () => {
   const tabs = [
     { id: 'upload', label: 'Upload', icon: Upload, description: 'Import your video' },
     { id: 'edit', label: 'Edit', icon: Scissors, description: 'Trim and enhance' },
-    { id: 'ai', label: 'AI Tools', icon: Brain, description: 'Smart editing' },
     { id: 'audio', label: 'Audio', icon: Volume2, description: 'Real-time audio processing' },
     { id: 'export', label: 'Export', icon: Download, description: 'Save your work' }
   ];
@@ -449,32 +448,6 @@ const Editor = () => {
           <div className="text-center py-12">
             <Video className="mx-auto text-gray-400 mb-4" size={48} />
             <p className="text-gray-600">Upload a video first to start editing</p>
-          </div>
-        );
-
-      case 'ai':
-        return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* AI Enhancement Cards */}
-              {[
-                { icon: Brain, title: 'Smart Summarization', desc: 'Extract key moments automatically', color: 'purple' },
-                { icon: Type, title: 'Auto Subtitles', desc: 'Generate captions in multiple languages', color: 'blue' },
-                { icon: Volume2, title: 'Audio Enhancement', desc: 'Remove noise and balance levels', color: 'green' },
-                { icon: Zap, title: 'Quick Cuts', desc: 'AI-powered scene detection', color: 'orange' }
-              ].map((tool, index) => (
-                <div key={index} className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 hover:border-purple-300 hover:shadow-lg transition-all duration-300">
-                  <div className={`p-3 rounded-xl bg-gradient-to-br from-${tool.color}-500 to-${tool.color}-600 w-fit mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <tool.icon className="text-white" size={24} />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{tool.title}</h3>
-                  <p className="text-gray-600 mb-4">{tool.desc}</p>
-                  <button className="w-full bg-gray-100 hover:bg-purple-100 text-gray-700 hover:text-purple-700 py-2 px-4 rounded-lg transition-colors duration-300">
-                    Configure
-                  </button>
-                </div>
-              ))}
-            </div>
           </div>
         );
 

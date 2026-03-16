@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:00:04,000
+Dies ist der Unterschied zwischen der Verwendung von Füllwörtern und der Nichtverwendung von Füllwörtern.
+
+2
+00:00:04,000 --> 00:00:12,000
+Heute denke ich, dass ich ein Erdnussbutter-Sandwich essen werde.
+
+3
+00:00:12,000 --> 00:00:18,000
+Heute denke ich, dass ich ein Erdnussbutter-Sandwich essen werde.
+

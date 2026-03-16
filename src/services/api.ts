@@ -1,6 +1,15 @@
 import { z } from 'zod';
 
-const API_URL = 'http://localhost:5001/api';
+// Support both local and remote API with automatic fallback
+const REMOTE_API_URL = import.meta.env.VITE_API_URL;
+const LOCAL_API_URL = 'http://localhost:5001/api';
+
+// Start with remote if available, otherwise local
+let API_URL = REMOTE_API_URL || LOCAL_API_URL;
+let useRemote = !!REMOTE_API_URL;
+
+// Export getter for current API URL (always fresh)
+export const getCurrentApiUrl = () => API_URL;
 
 // Interface for subtitle data
 export interface SubtitleData {
@@ -34,11 +43,29 @@ const videoOptionsSchema = z.object({
   // Enhancement specific options
   stabilization: z.string().optional(),
   audio_enhancement_type: z.string().optional(),
+  pause_threshold: z.number().optional(),
+  noise_reduction: z.string().optional(),
   brightness: z.number().optional(),
   contrast: z.number().optional(),
+  // Filler word removal options
+  detect_and_remove_fillers: z.boolean().optional(),
+  detect_repeated_words: z.boolean().optional(),
+  cut_filler_segments: z.boolean().optional(),
+  filler_removal_level: z.string().optional(),
   // Subtitle specific options
   subtitle_language: z.string().optional(),
-  subtitle_style: z.string().optional()
+  subtitle_style: z.string().optional(),
+  // Thumbnail specific options
+  thumbnail_text: z.string().nullable().optional(),
+  thumbnail_frame_index: z.number().nullable().optional(),
+  thumbnail_font_size: z.number().optional(),
+  thumbnail_text_color: z.string().optional(),
+  thumbnail_outline_color: z.string().optional(),
+  thumbnail_position: z.string().optional(),
+  thumbnail_font_style: z.string().optional(),
+  thumbnail_shadow: z.boolean().optional(),
+  thumbnail_background: z.boolean().optional(),
+  thumbnail_background_color: z.string().optional(),
 });
 
 export class ApiService {
@@ -61,6 +88,36 @@ export class ApiService {
     localStorage.removeItem('token');
   }
 
+  static getCurrentUser(): any {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        return JSON.parse(userStr);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  // Get current API URL (for debugging)
+  static getCurrentApiUrl(): string {
+    return API_URL;
+  }
+
+  // Try to switch to fallback API
+  private static switchToFallback() {
+    if (useRemote && REMOTE_API_URL) {
+      console.warn('🔄 Remote API failed, switching to local...');
+      API_URL = LOCAL_API_URL;
+      useRemote = false;
+    } else if (!useRemote && REMOTE_API_URL) {
+      console.warn('🔄 Local API failed, switching to remote...');
+      API_URL = REMOTE_API_URL;
+      useRemote = true;
+    }
+  }
+
   private static async request(endpoint: string, options: RequestInit = {}) {
     const token = this.getToken();
     const isForm = options.body instanceof FormData;
@@ -69,23 +126,31 @@ export class ApiService {
       // Only set JSON content-type when not sending FormData
       ...(isForm ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      // Add ngrok bypass header to avoid browser warning page
+      'ngrok-skip-browser-warning': 'true',
       ...options.headers
     };
 
     try {
+      console.log(`API Request: ${API_URL}${endpoint}`);
       const res = await fetch(`${API_URL}${endpoint}`, {
         ...options,
         headers
       });
+
+      console.log(`API Response: ${res.status} ${res.statusText}`);
 
       if (!res.ok) {
         // Try to parse JSON error, fallback to text
         let msg = `HTTP ${res.status}`;
         try {
           const payload = await res.json();
+          console.error('API Error payload:', payload);
           msg = payload.message || payload.error || msg;
         } catch {
-          msg = await res.text();
+          const text = await res.text();
+          console.error('API Error text:', text);
+          msg = text || msg;
         }
         throw new Error(msg);
       }
@@ -95,9 +160,50 @@ export class ApiService {
         return null;
       }
 
-      return await res.json();
+      const data = await res.json();
+      console.log('API Response data:', data);
+      return data;
     } catch (err) {
-      console.error('API request failed:', err);
+      console.error('API request failed:', endpoint, err);
+      
+      // If request failed and we have both URLs configured, try fallback
+      if (REMOTE_API_URL && LOCAL_API_URL && err instanceof TypeError) {
+        console.log('🔄 Network error detected, attempting fallback...');
+        this.switchToFallback();
+        
+        // Retry once with fallback URL
+        try {
+          console.log(`🔄 Retrying with fallback: ${API_URL}${endpoint}`);
+          const retryRes = await fetch(`${API_URL}${endpoint}`, {
+            ...options,
+            headers
+          });
+          
+          if (!retryRes.ok) {
+            let msg = `HTTP ${retryRes.status}`;
+            try {
+              const payload = await retryRes.json();
+              msg = payload.message || payload.error || msg;
+            } catch {
+              const text = await retryRes.text();
+              msg = text || msg;
+            }
+            throw new Error(msg);
+          }
+          
+          if (retryRes.status === 204) {
+            return null;
+          }
+          
+          const retryData = await retryRes.json();
+          console.log('✅ Fallback successful:', retryData);
+          return retryData;
+        } catch (retryErr) {
+          console.error('❌ Fallback also failed:', retryErr);
+          throw retryErr;
+        }
+      }
+      
       throw err;
     }
   }
@@ -164,11 +270,31 @@ export class ApiService {
     // Enhancement specific options
     stabilization?: string;
     audio_enhancement_type?: string;
+    pause_threshold?: number;
+    noise_reduction?: string;
     brightness?: number;
     contrast?: number;
+    // Filler word removal options
+    detect_and_remove_fillers?: boolean;
+    detect_repeated_words?: boolean;
+    cut_filler_segments?: boolean;
+    filler_removal_level?: string;
     // Subtitle specific options
     subtitle_language?: string;
     subtitle_style?: string;
+    // Summarization specific options
+    summary_length?: string;
+    summary_focus?: string;
+    // Thumbnail specific options
+    thumbnail_text?: string | null;
+    thumbnail_frame_index?: number | null;
+    thumbnail_font_size?: number;
+    thumbnail_text_color?: string;
+    thumbnail_outline_color?: string;
+    thumbnail_position?: string;
+    thumbnail_font_style?: string;
+    thumbnail_shadow?: boolean;
+    thumbnail_background?: boolean;
   }) {
     const validated = videoOptionsSchema.parse(options);
     return this.request(`/videos/${videoId}/process`, {
@@ -183,6 +309,22 @@ export class ApiService {
 
   static async getVideo(videoId: string) {
     return this.getVideoStatus(videoId);
+  }
+
+  static async getVideoSummary(videoId: string): Promise<{
+    summary: {
+      text: string;
+      key_points?: string[];
+      length?: string;
+      focus?: string;
+      transcript_length?: number;
+      summary_length_chars?: number;
+      compression_ratio?: number;
+      video_duration?: number;
+      error?: string;
+    } | null;
+  }> {
+    return this.request(`/videos/${videoId}/summary`);
   }
 
   static async getUserVideos() {
@@ -327,12 +469,32 @@ export class ApiService {
       body: JSON.stringify(data)
     });
   }
-  // Download processed video
-  static async downloadVideo(videoId: string): Promise<Blob> {
+
+  // Export video with edits (trim, text overlay, audio settings)
+  static async exportVideo(videoId: string, options: {
+    trim_start?: number;
+    trim_end?: number;
+    text_overlay?: string;
+    text_position?: string;
+    text_color?: string;
+    text_size?: number;
+    music_volume?: number;
+    video_volume?: number;
+    mute_original?: boolean;
+  }) {
+    return this.request(`/videos/${videoId}/export`, {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+
+  // Download exported video
+  static async downloadExportedVideo(videoId: string): Promise<Blob> {
     const token = this.getToken();
-    const response = await fetch(`${API_URL}/videos/${videoId}/download`, {
+    const response = await fetch(`${API_URL}/videos/${videoId}/download-export`, {
       headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        'ngrok-skip-browser-warning': 'true'
       }
     });
 
@@ -343,12 +505,57 @@ export class ApiService {
     return response.blob();
   }
 
+  // Download processed video with automatic fallback
+  static async downloadVideo(videoId: string): Promise<Blob> {
+    const token = this.getToken();
+    
+    // Try current API_URL first
+    try {
+      console.log(`Downloading from: ${API_URL}/videos/${videoId}/download`);
+      const response = await fetch(`${API_URL}/videos/${videoId}/download`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+
+      if (response.ok) {
+        return response.blob();
+      }
+      
+      console.warn(`Download failed with status ${response.status}, trying fallback...`);
+    } catch (error) {
+      console.warn('Download error, trying fallback:', error);
+    }
+    
+    // Try fallback URL
+    const fallbackUrl = useRemote ? LOCAL_API_URL : (REMOTE_API_URL || API_URL);
+    if (fallbackUrl !== API_URL) {
+      console.log(`Downloading from fallback: ${fallbackUrl}/videos/${videoId}/download`);
+      const response = await fetch(`${fallbackUrl}/videos/${videoId}/download`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Download failed on both URLs');
+      }
+
+      return response.blob();
+    }
+    
+    throw new Error('Download failed');
+  }
+
   // Download subtitle file
   static async downloadSubtitles(videoId: string, language: string, format: 'srt' | 'json' = 'srt'): Promise<Blob> {
     const token = this.getToken();
     const response = await fetch(`${API_URL}/videos/${videoId}/subtitles/${language}/download?format=${format}`, {
       headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        'ngrok-skip-browser-warning': 'true'
       }
     });
 
@@ -363,6 +570,32 @@ export class ApiService {
   static async deleteAccount() {
     return this.request('/auth/delete-account', {
       method: 'DELETE'
+    });
+  }
+
+  // Get video thumbnail URL
+  static getVideoThumbnailUrl(videoId: string, index?: number): string {
+    const token = this.getToken();
+    const indexParam = index !== undefined ? `index=${index}` : '';
+    const tokenParam = token ? `token=${encodeURIComponent(token)}` : '';
+    const separator = indexParam && tokenParam ? '&' : '';
+    const queryString = indexParam || tokenParam ? `?${indexParam}${separator}${tokenParam}` : '';
+    return `${API_URL}/videos/${videoId}/thumbnail${queryString}`;
+  }
+
+  // Get all thumbnails for a video
+  static async getVideoThumbnails(videoId: string) {
+    return this.request(`/videos/${videoId}/thumbnails`);
+  }
+
+  // Detect filler words in video
+  static async detectFillerWords(videoId: string, options: {
+    detection_level?: 'conservative' | 'medium' | 'aggressive';
+    detect_repeated?: boolean;
+  }) {
+    return this.request(`/videos/${videoId}/detect-fillers`, {
+      method: 'POST',
+      body: JSON.stringify(options)
     });
   }
 }

@@ -11,5 +11,6 @@
   "scm.alwaysShowRepositories": false,
   "workbench.activityBar.iconClickBehavior": "toggle",
   "git.decorations.enabled": false,
-  "git.enableStatusBarSync": false
+  "git.enableStatusBarSync": false,
+  "liveServer.settings.port": 5501
 }

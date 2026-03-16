@@ -30,7 +30,6 @@ const SubtitleEditor = ({ videoId, onClose, onSubtitlesUpdate }: SubtitleEditorP
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'ur', name: 'Urdu (اردو)', flag: '🇵🇰' },
-    { code: 'ru-ur', name: 'Roman Urdu', flag: '🇵🇰' },
     { code: 'ar', name: 'Arabic (العربية)', flag: '🇸🇦' },
     { code: 'hi', name: 'Hindi (हिंदी)', flag: '🇮🇳' },
     { code: 'es', name: 'Spanish', flag: '🇪🇸' },

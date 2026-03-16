@@ -1,0 +1,32 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 5.0,
+      "text": "Welcome to this video demonstration. This",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 5.0,
+      "end": 10.0,
+      "text": "is an example of English subtitles",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 10.0,
+      "end": 15.0,
+      "text": "generated automatically by SnipX AI.",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "fallback"
+}

@@ -1,0 +1,62 @@
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: fyp-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=fyp_video_app
+    networks:
+      - fyp-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fyp-backend
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    volumes:
+      # Mount uploads for persistence
+      - ./backend/uploads:/app/uploads
+      # Mount code for development (hot reload)
+      - ./backend:/app
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/fyp_video_app
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-secret-key-change-in-production}
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - mongodb
+    networks:
+      - fyp-network
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fyp-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_URL=http://localhost:5001/api
+    depends_on:
+      - backend
+    networks:
+      - fyp-network
+
+networks:
+  fyp-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local

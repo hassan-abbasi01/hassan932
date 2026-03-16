@@ -1,0 +1,816 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 4.380000000000001,
+      "end": 8.2,
+      "text": "You know, I don't think people would believe it, but I think it's self-taught.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 8.88,
+      "end": 12.5,
+      "text": "I don't think confidence is something that you are born with.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 12.98,
+      "end": 15.64,
+      "text": "I don't think confidence is, it's a skill set.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 16.24,
+      "end": 18.76,
+      "text": "And I had no confidence growing up.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 18.84,
+      "end": 22.5,
+      "text": "As a child, I had very low self-esteem.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 23.3,
+      "end": 24.64,
+      "text": "I was gawky as a teenager.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 24.96,
+      "end": 25.64,
+      "text": "I lived in America.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 8,
+      "start": 25.64,
+      "end": 29.38,
+      "text": "I was made to feel conscious about the fact that I was Indian.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 9,
+      "start": 30.0,
+      "end": 31.52,
+      "text": "That was weird at that time.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 10,
+      "start": 31.82,
+      "end": 37.96,
+      "text": "And not by everyone, but just by like a few bullies at school that hated me.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 11,
+      "start": 38.02,
+      "end": 39.14,
+      "text": "High school is hard for everyone.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 12,
+      "start": 39.84,
+      "end": 43.28,
+      "text": "But so I was in a very weird sort of teenage place.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 13,
+      "start": 44.02,
+      "end": 47.08,
+      "text": "And when Miss India happened, I mean, inherently competitive.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 14,
+      "start": 47.76,
+      "end": 53.42,
+      "text": "I think the fact that I was competitive pushed me to teach myself to be confident.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 15,
+      "start": 53.96,
+      "end": 55.8,
+      "text": "Initially, I faked it until I made it.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 16,
+      "start": 56.48,
+      "end": 59.34,
+      "text": "I was just like, I'm not going to let anyone see that I'm scared.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 17,
+      "start": 59.52,
+      "end": 62.28,
+      "text": "I'm not going to let anyone see that I'm affected.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 18,
+      "start": 62.46,
+      "end": 67.74,
+      "text": "And over time, I realized like as a woman, as a girl in this world,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 19,
+      "start": 68.52,
+      "end": 73.04,
+      "text": "if I allow myself to be hurt or if I allow myself to be affected,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 20,
+      "start": 73.04,
+      "end": 74.82,
+      "text": "that's all I'm going to be.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 21,
+      "start": 75.24,
+      "end": 79.38,
+      "text": "And I'm not trying to say that it's an issue that just women have.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 22,
+      "start": 79.82,
+      "end": 81.64,
+      "text": "It's not easy to be a woman and show business.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 23,
+      "start": 81.64,
+      "end": 84.44,
+      "text": "And especially a woman who's opinionated, especially someone who,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 24,
+      "start": 84.76,
+      "end": 88.4,
+      "text": "I'm not, I'm sort of like, and I wasn't like that from the beginning.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 25,
+      "start": 88.82,
+      "end": 89.42,
+      "text": "I sort of learned.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 26,
+      "start": 89.68,
+      "end": 92.24,
+      "text": "So confidence is something I taught myself over the years.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 27,
+      "start": 92.44,
+      "end": 95.16,
+      "text": "I started becoming okay with who I am.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 28,
+      "start": 95.36,
+      "end": 97.18,
+      "text": "I became the best version of me.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 29,
+      "start": 97.88000000000001,
+      "end": 100.52,
+      "text": "And then I sort of said, I'm okay.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 30,
+      "start": 100.86,
+      "end": 101.54,
+      "text": "You know, I'm all right.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 31,
+      "start": 101.72,
+      "end": 103.78,
+      "text": "Even if someone else thinks this, I'm okay.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 32,
+      "start": 104.18,
+      "end": 105.38,
+      "text": "And everyone can do that.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 33,
+      "start": 105.82,
+      "end": 106.96,
+      "text": "People just don't realize that.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 34,
+      "start": 107.2,
+      "end": 110.0,
+      "text": "I was always creative in school, but I didn't know what to do with it.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 35,
+      "start": 110.52,
+      "end": 113.26,
+      "text": "I used to write, I did plays, I would do school,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 36,
+      "start": 113.26,
+      "end": 116.1,
+      "text": "but my aspiration was never to be creative.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 37,
+      "start": 116.66,
+      "end": 120.36,
+      "text": "And now that I found this vocation, I'm producing, I write columns,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 38,
+      "start": 120.82,
+      "end": 124.32,
+      "text": "my creativity comes out in whatever way it can.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 39,
+      "start": 124.56,
+      "end": 128.28,
+      "text": "And I think somehow something guides you.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 40,
+      "start": 128.9,
+      "end": 129.82,
+      "text": "What that is, I don't know.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 41,
+      "start": 129.92,
+      "end": 130.74,
+      "text": "I don't have a name for it.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 42,
+      "start": 130.76,
+      "end": 131.54,
+      "text": "I don't think it's a religion.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 43,
+      "start": 131.72,
+      "end": 132.6,
+      "text": "I don't know if it's God.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 44,
+      "start": 132.72,
+      "end": 133.66,
+      "text": "I don't know what it is.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 45,
+      "start": 134.22,
+      "end": 135.74,
+      "text": "I think something is bigger than us.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 46,
+      "start": 136.14,
+      "end": 136.88,
+      "text": "And I believe in that.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 47,
+      "start": 136.88,
+      "end": 141.98,
+      "text": "Well, when I became Miss India, I sort of was on strange ground myself",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 48,
+      "start": 141.98,
+      "end": 145.98,
+      "text": "because I was literally, I was in college, I was studying.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 49,
+      "start": 146.36,
+      "end": 147.4,
+      "text": "And now I'm suddenly Miss World.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 50,
+      "start": 147.62,
+      "end": 151.6,
+      "text": "And I have these, I was traveling all over the world, you know,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 51,
+      "start": 151.8,
+      "end": 152.86,
+      "text": "being an ambassador.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 52,
+      "start": 153.86,
+      "end": 156.74,
+      "text": "And suddenly, movie offers started coming to me from India.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 53,
+      "start": 156.94,
+      "end": 160.08,
+      "text": "Because I think producers thought that it would make business sense to,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 54,
+      "start": 160.62,
+      "end": 162.94,
+      "text": "you know, have Miss World in the movie.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 55,
+      "start": 163.54,
+      "end": 165.0,
+      "text": "And I guess it did.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 56,
+      "start": 165.66,
+      "end": 168.92,
+      "text": "Because in my first, second films, like I won a lot of awards,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 57,
+      "start": 169.28,
+      "end": 170.44,
+      "text": "I didn't think I could act.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 58,
+      "start": 170.62,
+      "end": 174.86,
+      "text": "I just went in there with the idea of, okay, I can learn a new skill set.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 59,
+      "start": 175.24,
+      "end": 178.22,
+      "text": "I may not know what acting is about, but I can learn.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 60,
+      "start": 179.12,
+      "end": 180.82,
+      "text": "So that's how I taught myself.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 61,
+      "start": 180.9,
+      "end": 181.98,
+      "text": "I've never been to film school.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 62,
+      "start": 182.34,
+      "end": 185.06,
+      "text": "I taught my career has been in my film school.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 63,
+      "start": 185.26,
+      "end": 187.26,
+      "text": "I've fallen down and dusted myself off.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 64,
+      "start": 187.7,
+      "end": 189.28,
+      "text": "I've been okay to fail.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 65,
+      "start": 189.92,
+      "end": 191.34,
+      "text": "I don't like failure.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 66,
+      "start": 191.34,
+      "end": 194.04,
+      "text": "I'll never let the same failure happen to me again.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 67,
+      "start": 194.2,
+      "end": 195.06,
+      "text": "Because I learn from it.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 68,
+      "start": 195.68,
+      "end": 196.46,
+      "text": "I like knowledge.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 69,
+      "start": 197.6,
+      "end": 199.82,
+      "text": "I like learning from the people around me.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 70,
+      "start": 200.06,
+      "end": 203.98,
+      "text": "And I don't think anyone reaches a point no matter how successful you are in life,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 71,
+      "start": 204.46,
+      "end": 205.84,
+      "text": "or you can't learn something again.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 72,
+      "start": 206.32,
+      "end": 209.6,
+      "text": "And I think that sort of got me to where I am.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 73,
+      "start": 209.94,
+      "end": 211.7,
+      "text": "And that's been a big part of my work as a thing.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 74,
+      "start": 212.02,
+      "end": 214.0,
+      "text": "I remember when no one wanted to ask me a thing.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 75,
+      "start": 214.98000000000002,
+      "end": 216.32,
+      "text": "And I get that.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 76,
+      "start": 216.8,
+      "end": 219.46,
+      "text": "I remember when, and I still am.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 77,
+      "start": 219.46,
+      "end": 221.3,
+      "text": "Like sometimes there's so many fights that I do.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 78,
+      "start": 221.42,
+      "end": 225.72,
+      "text": "But I remember when nobody wanted to do, you know, want in my opinion.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 79,
+      "start": 225.94,
+      "end": 231.82,
+      "text": "Or I remember when I had to work on, when I was just the side chick to the guy.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 80,
+      "start": 232.12,
+      "end": 237.94,
+      "text": "And I had to work and do small but important significant parts to prove that I can.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 81,
+      "start": 238.1,
+      "end": 238.54,
+      "text": "And I will.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 82,
+      "start": 238.8,
+      "end": 239.32,
+      "text": "And then try.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 83,
+      "start": 239.58,
+      "end": 241.4,
+      "text": "So no one can be that.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 84,
+      "start": 241.5,
+      "end": 244.1,
+      "text": "You can't be like, oh, Destiny's going to knock on my door one day.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 85,
+      "start": 244.26,
+      "end": 244.86,
+      "text": "No, it won't.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 86,
+      "start": 245.16,
+      "end": 247.22,
+      "text": "You have to be able to recognize opportunities.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 87,
+      "start": 248.59999999999997,
+      "end": 251.12,
+      "text": "Because there'll be a lot of them that come into your life.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 88,
+      "start": 251.32,
+      "end": 253.96,
+      "text": "And once you recognize an opportunity, you have to seize the day.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 89,
+      "start": 254.46,
+      "end": 255.88,
+      "text": "And work and bloody hard.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 90,
+      "start": 256.02,
+      "end": 257.94,
+      "text": "Because there'll be 25 other people you want to do.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 91,
+      "start": 258.86,
+      "end": 261.48,
+      "text": "I was told that I wanted because of confidence.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 92,
+      "start": 261.68,
+      "end": 265.28,
+      "text": "Because I asked later, there was so many more beautiful women than me.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 93,
+      "start": 265.78,
+      "end": 267.58,
+      "text": "But of course, I was curious.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 94,
+      "start": 268.32,
+      "end": 269.38,
+      "text": "So I was like, well, what is it?",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 95,
+      "start": 269.5,
+      "end": 272.8,
+      "text": "And they were like, just, even you speak, you're just eloquent and confident.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 96,
+      "start": 272.8,
+      "end": 277.0,
+      "text": "And I was 18 and I realized how important it was.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 97,
+      "start": 277.48,
+      "end": 280.52,
+      "text": "And I was in this world at 18, just because I was confident.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 98,
+      "start": 281.74,
+      "end": 286.4,
+      "text": "So it made me understand that confidence truly is the key to getting ahead in life.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 99,
+      "start": 286.56,
+      "end": 288.64,
+      "text": "If you believe in yourself, the world will believe in you.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 100,
+      "start": 289.08,
+      "end": 290.64,
+      "text": "Because perception is reality.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 101,
+      "start": 305.86,
+      "end": 307.26,
+      "text": "And I realized that confidence is reality.",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

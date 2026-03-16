@@ -1,0 +1,120 @@
+{
+  "language": "ru-ur",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 0.937857142857143,
+      "text": "Yeh video SnipX AI ke zariye",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 0.937857142857143,
+      "end": 1.875714285714286,
+      "text": "automatically process kiya gaya hai. Hamara",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 1.875714285714286,
+      "end": 2.8135714285714286,
+      "text": "advanced system Urdu language ki features",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 2.8135714285714286,
+      "end": 3.751428571428572,
+      "text": "ko samajhta hai. Audio enhancement aur",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 3.751428571428572,
+      "end": 4.689285714285715,
+      "text": "noise reduction ke zariye best results",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 4.689285714285715,
+      "end": 5.627142857142857,
+      "text": "hasil kiye jaate hain. Subtitles ki",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 5.627142857142857,
+      "end": 6.565,
+      "text": "accuracy ke liye hum different techniques",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 8,
+      "start": 6.565,
+      "end": 7.502857142857144,
+      "text": "ka istemal karte hain. Yeh technology",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 9,
+      "start": 7.502857142857144,
+      "end": 8.440714285714286,
+      "text": "Urdu speakers ke liye specially design",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 10,
+      "start": 8.440714285714286,
+      "end": 9.37857142857143,
+      "text": "ki gayi hai. Hamara maqsad behtereen",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 11,
+      "start": 9.37857142857143,
+      "end": 10.316428571428572,
+      "text": "audio experience provide karna hai. Is",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 12,
+      "start": 10.316428571428572,
+      "end": 11.254285714285714,
+      "text": "system mein latest AI models shamil",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 13,
+      "start": 11.254285714285714,
+      "end": 12.192142857142859,
+      "text": "hain jo Urdu content ko accurately",
+      "language": "ru-ur",
+      "style": "clean"
+    },
+    {
+      "id": 14,
+      "start": 12.192142857142859,
+      "end": 13.13,
+      "text": "process kar sakte hain.",
+      "language": "ru-ur",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "fallback"
+}

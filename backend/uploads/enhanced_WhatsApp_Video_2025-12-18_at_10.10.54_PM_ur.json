@@ -1,0 +1,16 @@
+{
+  "language": "ur",
+  "segments": [
+    {
+      "id": 1,
+      "start": 9.7,
+      "end": 11.1,
+      "text": "موسیقی۔",
+      "language": "ur",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

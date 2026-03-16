@@ -1,0 +1,32 @@
+{
+  "language": "ur",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 4.0,
+      "text": "فلر الفاظ استعمال کرنے اور فلر الفاظ استعمال نہ کرنے میں یہ فرق ہے۔",
+      "language": "ur",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 4.0,
+      "end": 12.0,
+      "text": "آج، مجھے لگتا ہے کہ میں مونگ پھلی کے مکھن کا سینڈوچ کھاؤں گا۔",
+      "language": "ur",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 12.0,
+      "end": 18.0,
+      "text": "آج، مجھے لگتا ہے کہ میں مونگ پھلی کے مکھن کا سینڈوچ کھاؤں گا۔",
+      "language": "ur",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

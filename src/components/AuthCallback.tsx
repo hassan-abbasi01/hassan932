@@ -13,17 +13,22 @@ const AuthCallback = () => {
     const token = searchParams.get('token');
     if (token) {
       ApiService.setToken(token);
-      fetch('http://localhost:5001/api/auth/me', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+      fetch(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => {
           if (!res.ok) throw new Error('Failed to fetch user');
           return res.json();
         })
-        .then(user => {
-          setUser(user);
+        .then(userData => {
+          setUser({
+            email: userData.email,
+            firstName: userData.first_name || userData.firstName,
+            lastName: userData.last_name || userData.lastName
+          });
           toast.success('Login successful!');
-          navigate('/editor');
+          navigate('/features');
         })
         .catch(() => {
           toast.error('Failed to fetch user info');

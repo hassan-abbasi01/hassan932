@@ -1,0 +1,592 @@
+================================================================================
+         TEXT SUMMARIZATION - COMPLETE CODE REFERENCE
+================================================================================
+
+This file contains ALL code related to text summarization across the project.
+Files covered:
+  1. backend/services/video_service.py  - Core summarization logic
+  2. backend/app.py                     - API endpoint
+  3. backend/models/video.py            - Video model (summary field)
+  4. backend/requirements.txt           - Dependencies
+  5. src/services/api.ts                - Frontend API service
+  6. src/pages/Features.tsx             - Frontend UI component
+  7. .env                               - Environment variable needed
+
+================================================================================
+FILE 1: backend/services/video_service.py
+================================================================================
+
+--- SECTION A: OpenAI Client Initialization (inside __init__ of VideoService) ---
+
+        # Initialize OpenAI client for summarization
+        try:
+            import openai
+            api_key = os.environ.get('OPENAI_API_KEY', '')
+            if api_key:
+                self.openai_client = openai.OpenAI(api_key=api_key)
+                print("[VIDEO SERVICE] OpenAI client initialized for video summarization")
+            else:
+                self.openai_client = None
+                print("[VIDEO SERVICE] No OpenAI API key found - summarization disabled")
+        except Exception as e:
+            print(f"Warning: Could not initialize OpenAI client: {e}")
+            self.openai_client = None
+
+--- SECTION B: _summarize_video() - Main Orchestrator Method ---
+
+    def _summarize_video(self, video, options=None):
+        """Summarize video using Whisper transcription + OpenAI GPT"""
+        options = options or {}
+        summary_length = options.get('summary_length', 'medium')
+        summary_focus = options.get('summary_focus', 'balanced')
+        
+        print(f"[SUMMARIZE] Starting video summarization (length={summary_length}, focus={summary_focus})")
+        
+        clip = None
+        audio_path = None
+        try:
+            # Step 1: Extract audio from video
+            clip = VideoFileClip(video.filepath)
+            if clip.audio is None:
+                print("[SUMMARIZE] Video has no audio track - cannot summarize")
+                video.outputs['summary'] = json.dumps({
+                    'error': 'Video has no audio track to summarize',
+                    'text': ''
+                })
+                return
+            
+            audio_path = f"{os.path.splitext(video.filepath)[0]}_summ_audio.wav"
+            clip.audio.write_audiofile(audio_path, verbose=False, logger=None)
+            print(f"[SUMMARIZE] Audio extracted to: {audio_path}")
+            
+            # Emit progress
+            if hasattr(video, 'id'):
+                self._emit_progress(str(video.id), 'summarizing', 60, 'Transcribing audio with Whisper...')
+            
+            # Step 2: Transcribe with Whisper
+            transcript_text = ''
+            try:
+                import whisper
+                device = get_device()
+                print(f"[SUMMARIZE] Loading Whisper model on {device}...")
+                model = whisper.load_model("base", device=device)
+                result = model.transcribe(audio_path, language=None)  # auto-detect language
+                transcript_text = result.get('text', '').strip()
+                detected_lang = result.get('language', 'en')
+                print(f"[SUMMARIZE] Whisper transcription complete. Language: {detected_lang}, Length: {len(transcript_text)} chars")
+            except Exception as whisper_err:
+                print(f"[SUMMARIZE] Whisper transcription failed: {whisper_err}")
+                # Fallback: check if subtitles already exist
+                subtitles_info = video.outputs.get('subtitles', {})
+                if isinstance(subtitles_info, dict):
+                    srt_path = subtitles_info.get('srt_path', '')
+                    json_path = subtitles_info.get('json_path', '')
+                    if json_path and os.path.exists(json_path):
+                        with open(json_path, 'r', encoding='utf-8') as f:
+                            sub_data = json.load(f)
+                        transcript_text = ' '.join([seg.get('text', '') for seg in sub_data if isinstance(seg, dict)])
+                    elif srt_path and os.path.exists(srt_path):
+                        with open(srt_path, 'r', encoding='utf-8') as f:
+                            lines = f.readlines()
+                        transcript_text = ' '.join([l.strip() for l in lines if l.strip() and not l.strip().isdigit() and '-->' not in l])
+                print(f"[SUMMARIZE] Fallback transcript length: {len(transcript_text)} chars")
+            
+            if not transcript_text:
+                print("[SUMMARIZE] No transcript available - cannot generate summary")
+                video.outputs['summary'] = json.dumps({
+                    'error': 'Could not transcribe audio',
+                    'text': ''
+                })
+                return
+            
+            # Emit progress
+            if hasattr(video, 'id'):
+                self._emit_progress(str(video.id), 'summarizing', 75, 'Generating AI summary...')
+            
+            # Step 3: Summarize using OpenAI API or fallback extractive method
+            summary_text = ''
+            key_points = []
+            
+            if self.openai_client:
+                try:
+                    summary_text, key_points = self._summarize_with_openai(
+                        transcript_text, summary_length, summary_focus,
+                        duration=clip.duration if clip else None
+                    )
+                except Exception as openai_err:
+                    print(f"[SUMMARIZE] OpenAI summarization failed: {openai_err}")
+            
+            # Fallback: extractive summarization
+            if not summary_text:
+                summary_text, key_points = self._extractive_summarize(
+                    transcript_text, summary_length
+                )
+            
+            # Step 4: Save summary
+            summary_data = {
+                'text': summary_text,
+                'key_points': key_points,
+                'length': summary_length,
+                'focus': summary_focus,
+                'transcript_length': len(transcript_text),
+                'summary_length': len(summary_text),
+                'compression_ratio': round(len(summary_text) / max(len(transcript_text), 1) * 100, 1),
+                'video_duration': round(clip.duration, 1) if clip else None
+            }
+            
+            summary_path = f"{os.path.splitext(video.filepath)[0]}_summary.json"
+            with open(summary_path, 'w', encoding='utf-8') as f:
+                json.dump(summary_data, f, ensure_ascii=False, indent=2)
+            
+            video.outputs['summary'] = summary_path
+            print(f"[SUMMARIZE] Summary saved to: {summary_path}")
+            print(f"[SUMMARIZE] Summary ({len(summary_text)} chars, {summary_data['compression_ratio']}% of original)")
+            
+            # Emit progress complete
+            if hasattr(video, 'id'):
+                self._emit_progress(str(video.id), 'summarizing', 90, 'Summary generated successfully!')
+                
+        except Exception as e:
+            import traceback
+            print(f"[SUMMARIZE] Error summarizing video: {e}")
+            traceback.print_exc()
+            video.outputs['summary'] = json.dumps({
+                'error': str(e),
+                'text': ''
+            })
+        finally:
+            if clip:
+                try:
+                    clip.close()
+                except:
+                    pass
+            if audio_path and os.path.exists(audio_path):
+                try:
+                    os.remove(audio_path)
+                except:
+                    pass
+
+--- SECTION C: _summarize_with_openai() - AI Summarization via GPT ---
+
+    def _summarize_with_openai(self, transcript, length='medium', focus='balanced', duration=None):
+        """Use OpenAI GPT to generate a structured summary"""
+        length_instructions = {
+            'short': 'Create a brief 2-3 sentence summary.',
+            'medium': 'Create a detailed summary of 4-6 sentences.',
+            'long': 'Create a comprehensive summary of 8-12 sentences covering all major points.'
+        }
+        
+        focus_instructions = {
+            'balanced': 'Cover all aspects of the content equally.',
+            'visual': 'Focus on visual elements, scenes, and actions described.',
+            'audio': 'Focus on sounds, music, tone, and audio elements mentioned.',
+            'text': 'Focus on the spoken words, arguments, and verbal content.'
+        }
+        
+        duration_info = f"The video is {round(duration, 0)} seconds long. " if duration else ""
+        
+        # Truncate transcript if too long for API
+        max_chars = 12000
+        if len(transcript) > max_chars:
+            transcript = transcript[:max_chars] + '... [transcript truncated]'
+        
+        prompt = f"""You are a video content analyst. {duration_info}Below is the transcript of a video.
+
+{length_instructions.get(length, length_instructions['medium'])}
+{focus_instructions.get(focus, focus_instructions['balanced'])}
+
+Also extract 3-5 key points as a bullet list.
+
+Transcript:
+\"\"\"
+{transcript}
+\"\"\"
+
+Respond in this exact JSON format:
+{{
+  "summary": "Your summary text here",
+  "key_points": ["Point 1", "Point 2", "Point 3"]
+}}"""
+        
+        print(f"[SUMMARIZE-OPENAI] Sending {len(transcript)} chars to OpenAI...")
+        
+        response = self.openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful video content summarizer. Always respond with valid JSON."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.5,
+            max_tokens=1000
+        )
+        
+        content = response.choices[0].message.content.strip()
+        print(f"[SUMMARIZE-OPENAI] Response received: {len(content)} chars")
+        
+        # Parse JSON response
+        try:
+            # Try to extract JSON from the response
+            if '```json' in content:
+                content = content.split('```json')[1].split('```')[0].strip()
+            elif '```' in content:
+                content = content.split('```')[1].split('```')[0].strip()
+            
+            result = json.loads(content)
+            return result.get('summary', content), result.get('key_points', [])
+        except json.JSONDecodeError:
+            # If not valid JSON, return raw text
+            return content, []
+
+--- SECTION D: _extractive_summarize() - Fallback (No API needed) ---
+
+    def _extractive_summarize(self, transcript, length='medium'):
+        """Fallback extractive summarization (no external API needed)"""
+        import re as regex
+        
+        # Split into sentences
+        sentences = regex.split(r'(?<=[.!?])\s+', transcript)
+        sentences = [s.strip() for s in sentences if len(s.strip()) > 20]
+        
+        if not sentences:
+            return transcript[:500], []
+        
+        # Determine how many sentences to keep
+        ratio_map = {'short': 0.2, 'medium': 0.4, 'long': 0.6}
+        ratio = ratio_map.get(length, 0.4)
+        num_sentences = max(2, int(len(sentences) * ratio))
+        
+        # Simple scoring: prefer longer sentences, sentences with key terms
+        scored = []
+        for i, sent in enumerate(sentences):
+            score = len(sent.split())  # word count as base score
+            # Boost first and last sentences
+            if i == 0:
+                score *= 1.5
+            if i == len(sentences) - 1:
+                score *= 1.3
+            # Boost sentences with signal phrases
+            signal_words = ['important', 'key', 'main', 'significant', 'conclusion',
+                           'result', 'therefore', 'however', 'because', 'first', 'finally']
+            for word in signal_words:
+                if word in sent.lower():
+                    score *= 1.2
+            scored.append((i, score, sent))
+        
+        # Sort by score, take top N, then re-sort by original position
+        scored.sort(key=lambda x: x[1], reverse=True)
+        selected = scored[:num_sentences]
+        selected.sort(key=lambda x: x[0])  # maintain original order
+        
+        summary_text = ' '.join([s[2] for s in selected])
+        
+        # Extract key points (top 3-5 highest-scored sentences)
+        key_points = [s[2][:100] for s in scored[:min(5, len(scored))]]
+        
+        return summary_text, key_points
+
+
+================================================================================
+FILE 2: backend/app.py
+================================================================================
+
+--- API Endpoint: GET /api/videos/<video_id>/summary ---
+
+@app.route('/api/videos/<video_id>/summary', methods=['GET'])
+@require_auth
+def get_video_summary(user_id, video_id):
+    try:
+        video = video_service.get_video(video_id)
+        if not video:
+            return jsonify({'error': 'Video not found'}), 404
+        
+        if str(video.user_id) != str(user_id):
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        summary_info = video.outputs.get('summary', '')
+        if not summary_info:
+            return jsonify({'error': 'No summary available', 'summary': None}), 200
+        
+        import json as json_lib
+        
+        # If summary_info is a file path
+        if isinstance(summary_info, str) and os.path.exists(summary_info):
+            with open(summary_info, 'r', encoding='utf-8') as f:
+                summary_data = json_lib.load(f)
+            return jsonify({'summary': summary_data}), 200
+        
+        # If summary_info is already JSON string
+        if isinstance(summary_info, str):
+            try:
+                summary_data = json_lib.loads(summary_info)
+                return jsonify({'summary': summary_data}), 200
+            except json_lib.JSONDecodeError:
+                return jsonify({'summary': {'text': summary_info}}), 200
+        
+        return jsonify({'summary': summary_info}), 200
+        
+    except Exception as e:
+        logger.error(f"Get summary error: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+--- Also in the video list endpoint, has_summary flag ---
+
+'has_summary': bool(video.outputs.get('summary'))
+
+
+================================================================================
+FILE 3: backend/models/video.py
+================================================================================
+
+--- outputs dict in Video.__init__ (summary field) ---
+
+        self.outputs = {
+            "processed_video": None,
+            "thumbnail": None,
+            "subtitles": None,
+            "summary": None          # <-- This field stores summary path or JSON string
+        }
+
+
+================================================================================
+FILE 4: backend/requirements.txt
+================================================================================
+
+--- Dependencies needed for summarization ---
+
+openai            # OpenAI GPT API (for AI summarization)
+openai-whisper    # Whisper speech-to-text (for audio transcription)
+moviepy           # Video/audio extraction (VideoFileClip)
+torch             # Required by Whisper (GPU/CPU)
+
+
+================================================================================
+FILE 5: src/services/api.ts
+================================================================================
+
+--- ProcessingOptions schema (Zod) - summarize fields ---
+
+  summarize: z.boolean().optional(),
+  summary_length: z.string().optional(),
+  summary_focus: z.string().optional(),
+
+--- processVideo options type - summarize fields ---
+
+    summarize?: boolean;
+    summary_length?: string;
+    summary_focus?: string;
+
+--- getVideoSummary() API method ---
+
+  static async getVideoSummary(videoId: string): Promise<{
+    summary: {
+      text: string;
+      key_points?: string[];
+      length?: string;
+      focus?: string;
+      transcript_length?: number;
+      summary_length?: number;
+      compression_ratio?: number;
+      video_duration?: number;
+      error?: string;
+    } | null;
+  }> {
+    return this.request(`/videos/${videoId}/summary`);
+  }
+
+
+================================================================================
+FILE 6: src/pages/Features.tsx
+================================================================================
+
+--- State declarations ---
+
+  const [summaryLength, setSummaryLength] = useState<string>('medium');
+  const [summaryFocus, setSummaryFocus] = useState<string>('balanced');
+  const [summarizationProgress, setSummarizationProgress] = useState<ProgressState>({ visible: false, percentage: 0, status: '' });
+  const [summaryResult, setSummaryResult] = useState<{
+    text: string;
+    key_points?: string[];
+    compression_ratio?: number;
+    video_duration?: number;
+  } | null>(null);
+
+--- handleSummarizeVideo() function ---
+
+  const handleSummarizeVideo = () => {
+    if (!uploadedVideoId) {
+      toast.error('Please upload a video file first');
+      return;
+    }
+    logToConsole(`Starting video summarization: Length=${summaryLength}, Focus=${summaryFocus}`);
+    setIsLoadingPreview(true);
+    setSummaryResult(null);
+    processVideo(
+      { summarize: true, summary_length: summaryLength, summary_focus: summaryFocus },
+      setSummarizationProgress,
+      'Video summarized successfully'
+    ).then(async () => {
+      // Fetch the generated summary
+      if (uploadedVideoId && isAuthenticated) {
+        try {
+          const data = await ApiService.getVideoSummary(uploadedVideoId);
+          if (data?.summary && data.summary.text) {
+            setSummaryResult(data.summary);
+            logToConsole(`Summary generated: ${data.summary.text.length} chars`, 'success');
+          }
+        } catch (err) {
+          console.error('[Features] Error fetching summary:', err);
+        }
+      }
+    }).finally(() => setIsLoadingPreview(false));
+  };
+
+--- Summarization Tab UI (JSX) ---
+
+            {/* Summarization Tab */}
+            <div id="summarization-tab" className={`tab-content ${activeTab === 'summarization' ? 'block' : 'hidden'}`}>
+              <div className="bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white/20 animate-content-reveal-3d">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                  <Film className="mr-3 text-orange-600 animate-pulse" size={28} />
+                  Video Summarization
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <label htmlFor="summary-length" className="block text-sm font-bold text-gray-700">Summary Length</label>
+                    <select 
+                      id="summary-length" 
+                      value={summaryLength} 
+                      onChange={(e) => setSummaryLength(e.target.value)} 
+                      className="block w-full px-4 py-3 border-2 border-orange-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80 backdrop-blur-sm text-sm font-medium"
+                    >
+                      <option value="short">Short (~20% of original)</option>
+                      <option value="medium">Medium (~40% of original)</option>
+                      <option value="long">Long (~60% of original)</option>
+                    </select>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <label htmlFor="summary-focus" className="block text-sm font-bold text-gray-700">Focus</label>
+                    <select 
+                      id="summary-focus" 
+                      value={summaryFocus} 
+                      onChange={(e) => setSummaryFocus(e.target.value)} 
+                      className="block w-full px-4 py-3 border-2 border-orange-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80 backdrop-blur-sm text-sm font-medium"
+                    >
+                      <option value="balanced">Balanced</option>
+                      <option value="visual">Visual Content</option>
+                      <option value="audio">Audio Content</option>
+                      <option value="text">Spoken Text</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="mt-8">
+                  <button 
+                    onClick={handleSummarizeVideo} 
+                    className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-300 flex items-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-xl" 
+                    disabled={!uploadedVideoId || isUploading}
+                  >
+                    <Film className="mr-3 h-6 w-6" />
+                    Summarize Video
+                  </button>
+                </div>
+                {renderProgressBar(summarizationProgress)}
+                
+                {/* Summary Result Display */}
+                {summaryResult && summaryResult.text && (
+                  <div className="mt-6 animate-slide-down">
+                    <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-2xl p-6 shadow-lg">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-bold text-gray-900 flex items-center">
+                          <Film className="mr-2 text-orange-600" size={20} />
+                          Video Summary
+                        </h4>
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          {summaryResult.compression_ratio && (
+                            <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
+                              {summaryResult.compression_ratio}% of original
+                            </span>
+                          )}
+                          {summaryResult.video_duration && (
+                            <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">
+                              {Math.round(summaryResult.video_duration)}s video
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <p className="text-gray-700 leading-relaxed mb-4 whitespace-pre-wrap">
+                        {summaryResult.text}
+                      </p>
+                      
+                      {summaryResult.key_points && summaryResult.key_points.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-orange-200">
+                          <h5 className="text-sm font-bold text-gray-800 mb-2">Key Points:</h5>
+                          <ul className="space-y-1">
+                            {summaryResult.key_points.map((point, idx) => (
+                              <li key={idx} className="flex items-start text-sm text-gray-600">
+                                <span className="text-orange-500 mr-2 mt-0.5">•</span>
+                                {point}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      <div className="mt-4 flex gap-2">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              summaryResult.text + 
+                              (summaryResult.key_points?.length 
+                                ? '\n\nKey Points:\n' + summaryResult.key_points.map(p => `• ${p}`).join('\n') 
+                                : '')
+                            );
+                            toast.success('Summary copied to clipboard!');
+                          }}
+                          className="bg-orange-100 hover:bg-orange-200 text-orange-700 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                        >
+                          Copy Summary
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+
+================================================================================
+FILE 7: .env  (environment variable required)
+================================================================================
+
+OPENAI_API_KEY=your_openai_api_key_here
+
+NOTE: Without this key, the system automatically falls back to the
+      extractive summarization method (no AI, no API call needed).
+
+
+================================================================================
+HOW IT ALL CONNECTS - FLOW SUMMARY
+================================================================================
+
+1. User selects Summary Length + Focus on the UI (Features.tsx)
+2. User clicks "Summarize Video"
+3. handleSummarizeVideo() calls processVideo() with { summarize: true, summary_length, summary_focus }
+4. Frontend sends POST to /api/videos/<id>/process  (app.py)
+5. Backend calls video_service._summarize_video(video, options)  (video_service.py)
+6. _summarize_video():
+     a. Extracts audio using moviepy
+     b. Transcribes audio using Whisper
+     c. Calls _summarize_with_openai() if OPENAI_API_KEY is set
+        OR falls back to _extractive_summarize()
+     d. Saves result as <video_name>_summary.json
+     e. Stores file path in video.outputs['summary']
+7. After processing, frontend calls ApiService.getVideoSummary(videoId)
+8. GET /api/videos/<id>/summary reads the saved JSON and returns it
+9. Frontend displays the summary text + key points in the UI
+
+================================================================================
+END OF FILE
+================================================================================

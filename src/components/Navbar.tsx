@@ -140,14 +140,24 @@ const Navbar = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarProps) => {
                   </button>
                 </div>
               ) : (
-                <Link 
-                  to="/login"
-                  className="group bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg font-medium"
-                >
-                  <span className="group-hover:scale-105 inline-block transition-transform duration-300">
-                    Get Started
-                  </span>
-                </Link>
+                <>
+                  <Link 
+                    to="/login"
+                    className="group bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg font-medium"
+                  >
+                    <span className="group-hover:scale-105 inline-block transition-transform duration-300">
+                      Get Started
+                    </span>
+                  </Link>
+                  <Link 
+                    to="/admin/login"
+                    className="group border-2 border-purple-600 text-purple-600 px-6 py-2 rounded-full hover:bg-purple-50 transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg font-medium"
+                  >
+                    <span className="group-hover:scale-105 inline-block transition-transform duration-300">
+                      Admin
+                    </span>
+                  </Link>
+                </>
               )}
             </div>
             
@@ -237,13 +247,20 @@ const Navbar = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarProps) => {
                   </div>
                 </>
               ) : (
-                <div className="pt-4 border-t border-gray-200">
+                <div className="pt-4 border-t border-gray-200 space-y-3">
                   <Link 
                     to="/login"
                     className="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 text-center font-medium"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Get Started
+                  </Link>
+                  <Link 
+                    to="/admin/login"
+                    className="block w-full border-2 border-purple-600 text-purple-600 py-3 px-4 rounded-lg hover:bg-purple-50 transition-all duration-300 text-center font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Admin Login
                   </Link>
                 </div>
               )}

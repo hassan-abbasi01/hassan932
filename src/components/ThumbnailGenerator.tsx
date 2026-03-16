@@ -19,6 +19,9 @@ const ThumbnailGenerator = ({ thumbnailUrl, brandLabel = 'SnipX' }: ThumbnailGen
   const [brandColor, setBrandColor] = useState('#7c3aed');
   const thumbnailCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // Debug logging
+  console.log('ThumbnailGenerator rendered:', { thumbnailUrl, hasThumbnail: !!thumbnailUrl });
+
   const handleDownload = async () => {
     if (!thumbnailUrl) {
       toast.error('No thumbnail generated yet');
@@ -130,6 +133,11 @@ const ThumbnailGenerator = ({ thumbnailUrl, brandLabel = 'SnipX' }: ThumbnailGen
                 src={thumbnailUrl}
                 alt="Generated thumbnail"
                 className="w-full h-40 object-cover"
+                onLoad={() => console.log('✅ Thumbnail image loaded successfully')}
+                onError={(e) => {
+                  console.error('❌ Thumbnail image failed to load:', e);
+                  console.error('Failed URL:', thumbnailUrl);
+                }}
               />
               <div className="absolute inset-0 flex flex-col justify-end p-3 pointer-events-none">
                 <span 

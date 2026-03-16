@@ -1,0 +1,128 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 2.0,
+      "text": "And and and are with us",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 2.8600000000000003,
+      "end": 5.14,
+      "text": "For the entire nation from the dead",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 5.14,
+      "end": 7.08,
+      "text": "Will say something with us",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 7.08,
+      "end": 8.8,
+      "text": "Babar bhai, now you are Rizwan bhai",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 9.36,
+      "end": 10.92,
+      "text": "Your lives have increased",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 10.92,
+      "end": 12.8,
+      "text": "But Babar Bhai",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 14.88,
+      "end": 16.18,
+      "text": "What can you say?",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 8,
+      "start": 16.18,
+      "end": 18.2,
+      "text": "A question is often asked",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 9,
+      "start": 18.2,
+      "end": 20.68,
+      "text": "That when the wind is coming from every corner",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 10,
+      "start": 20.68,
+      "end": 24.68,
+      "text": "How Babar Babar Babar fails",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 11,
+      "start": 24.68,
+      "end": 27.18,
+      "text": "Ah, first of all, Assalam Alaikum to everyone",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 12,
+      "start": 31.499999999999996,
+      "end": 33.24,
+      "text": "Thanks for speaking up",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 13,
+      "start": 33.24,
+      "end": 34.34,
+      "text": "This is the love of people",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 14,
+      "start": 34.34,
+      "end": 36.62,
+      "text": "And that's what we play for",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 15,
+      "start": 36.62,
+      "end": 38.88,
+      "text": "And the proud moment happens",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

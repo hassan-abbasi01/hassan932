@@ -95,6 +95,7 @@ const Footer = () => {
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">API Reference</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Community</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Support</a></li>
+              <li><a href="/admin/login" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">🔐 Admin Login</a></li>
             </ul>
           </div>
           

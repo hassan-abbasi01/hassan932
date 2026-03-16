@@ -1,0 +1,344 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 1.88,
+      "text": "And others are with us too",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 2.4800000000000058,
+      "end": 4.62,
+      "text": "I owe you all to us",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 5.340000000000006,
+      "end": 6.22,
+      "text": "some went",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 7.04,
+      "end": 8.02,
+      "text": "I am right next door",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 8.02,
+      "end": 9.02,
+      "text": "र्जवान बच्छी",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 9.02,
+      "end": 10.58,
+      "text": "you want to grow",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 10.58,
+      "end": 12.08,
+      "text": "but only the bagel",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 8,
+      "start": 14.660000000000005,
+      "end": 16.12,
+      "text": "what can be said",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 9,
+      "start": 16.12,
+      "end": 17.98,
+      "text": "A question is asked a lot",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 10,
+      "start": 17.98,
+      "end": 20.58,
+      "text": "That when everything starts coming from every corner",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 11,
+      "start": 20.58,
+      "end": 21.86,
+      "text": "बागर बागर",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 12,
+      "start": 21.86,
+      "end": 23.86,
+      "text": "It starts like a garden",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 13,
+      "start": 24.800000000000004,
+      "end": 26.48,
+      "text": "I was the first one but",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 14,
+      "start": 47.080000000000005,
+      "end": 48.88,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 15,
+      "start": 48.88,
+      "end": 49.78,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 16,
+      "start": 49.78,
+      "end": 50.56,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 17,
+      "start": 50.56,
+      "end": 50.98,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 18,
+      "start": 50.98,
+      "end": 53.54,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 19,
+      "start": 56.08,
+      "end": 57.08,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 20,
+      "start": 57.08,
+      "end": 57.64,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 21,
+      "start": 57.64,
+      "end": 57.82,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 22,
+      "start": 57.82,
+      "end": 57.86,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 23,
+      "start": 57.86,
+      "end": 58.1,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 24,
+      "start": 58.1,
+      "end": 58.62,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 25,
+      "start": 58.62,
+      "end": 59.6,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 26,
+      "start": 59.6,
+      "end": 59.98,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 27,
+      "start": 70.27999999999999,
+      "end": 72.96,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 28,
+      "start": 72.96,
+      "end": 75.96,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 29,
+      "start": 75.96,
+      "end": 76.1,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 30,
+      "start": 76.1,
+      "end": 79.28,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 31,
+      "start": 79.28,
+      "end": 79.94,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 32,
+      "start": 79.94,
+      "end": 81.34,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 33,
+      "start": 84.24,
+      "end": 85.68,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 34,
+      "start": 85.68,
+      "end": 87.26,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 35,
+      "start": 87.26,
+      "end": 87.46,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 36,
+      "start": 87.46,
+      "end": 88.14,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 37,
+      "start": 88.14,
+      "end": 88.42,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 38,
+      "start": 88.42,
+      "end": 89.96,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 39,
+      "start": 89.96,
+      "end": 93.12,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 40,
+      "start": 93.12,
+      "end": 94.88,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 41,
+      "start": 94.88,
+      "end": 96.68,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 42,
+      "start": 96.68,
+      "end": 97.04,
+      "text": "I am crazy",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

@@ -1,0 +1,168 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 3.2,
+      "text": "I don't think people would believe it, but I think it's self-taught.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 3.66,
+      "end": 11.68,
+      "text": "I don't think confidence growing up as a child, I had very low self-esteem, that was weird",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 11.68,
+      "end": 16.42,
+      "text": "at that time and not be confident.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 17.08,
+      "end": 18.78,
+      "text": "Initially I faked it till I made it.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 19.68,
+      "end": 24.98,
+      "text": "I would just allow myself to be hurt or if I allow myself to be affected, that's all",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 24.98,
+      "end": 28.4,
+      "text": "you know trying to say that it's an issue that just women have.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 28.4,
+      "end": 32.44,
+      "text": "It's not easy to be a woman, I wasn't like that from the beginning, I sort of learned.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 8,
+      "start": 32.7,
+      "end": 35.16,
+      "text": "So confidence is something I taught myself over the end.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 9,
+      "start": 35.34,
+      "end": 41.72,
+      "text": "I became the best version of me and then I sort of said school, but my aspiration was never",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 10,
+      "start": 41.72,
+      "end": 43.08,
+      "text": "to be creative.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 11,
+      "start": 43.7,
+      "end": 49.82,
+      "text": "And now that I found this bookating, I write columns, my creativity comes out in whatever way.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 12,
+      "start": 50.0,
+      "end": 56.82,
+      "text": "It became a sin, I sort of was on strange ground myself because I'm being an ambassador",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 13,
+      "start": 57.78000000000001,
+      "end": 63.4,
+      "text": "and suddenly movie offers start to come and make business sense to you know have this world",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 14,
+      "start": 63.4,
+      "end": 67.9,
+      "text": "in the movie and I taught my career has been my first.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 15,
+      "start": 68.06,
+      "end": 73.0,
+      "text": "I've fallen down, I've dusted myself and I have to work and do small but important",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 16,
+      "start": 73.0,
+      "end": 77.72,
+      "text": "significant parts to prove that there's nothing in an awkward my day or one day, no at all.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 17,
+      "start": 78.34,
+      "end": 81.96,
+      "text": "You have to be able to recognise opportunities, recognise an opportunity, you have to see the day",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 18,
+      "start": 81.96,
+      "end": 85.08,
+      "text": "and work in bloody hard because there'll be 25 of them.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 19,
+      "start": 85.08,
+      "end": 88.76,
+      "text": "That I wanted because of confidence because I asked later there was so many more beautiful women",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 20,
+      "start": 89.58,
+      "end": 94.94,
+      "text": "that you're just eloquent and confident and you know and I was 18 and I realised how",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

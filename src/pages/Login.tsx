@@ -55,7 +55,8 @@ const Login = () => {
 
   // OAuth handlers (copied from Signup)
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5001/api/auth/google/login';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    window.location.href = `${API_URL}/auth/google/login`;
   };
 
   return (
@@ -146,7 +147,10 @@ const Login = () => {
         <div className="max-w-md mx-auto bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/20 animate-slide-up-3d">
           <div className="p-8">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 animate-slide-in-3d">Sign in to your account</h2>
+              <h2 className="text-3xl font-bold text-gray-800 animate-slide-in-3d">User Login</h2>
+              <p className="text-sm text-gray-600 mt-2">
+                Sign in to your SnipX account
+              </p>
               <p className="text-gray-600 mt-2 animate-fade-in-3d">
                 Don't have an account?{' '}
                 <Link to="/signup" className="text-indigo-600 hover:text-indigo-500 font-medium transition-colors duration-300">
@@ -285,7 +289,7 @@ const Login = () => {
 
           {/* Footer */}
           <div className="bg-gradient-to-r from-gray-50 to-slate-50 px-8 py-6 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center">
+            <p className="text-xs text-gray-500 text-center mb-3">
               By continuing, you agree to our{' '}
               <Link to="#" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                 Terms of Service
@@ -293,9 +297,18 @@ const Login = () => {
               and{' '}
               <Link to="#" className="text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                 Privacy Policy
-              </Link>
-              .
+              </Link>.
             </p>
+            {/* Admin Login Link */}
+            <div className="pt-3 border-t border-gray-200">
+              <Link 
+                to="/admin/login"
+                className="flex items-center justify-center gap-2 text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors duration-300"
+              >
+                <Sparkles className="w-4 h-4" />
+                Admin Portal Access
+              </Link>
+            </div>
           </div>
         </div>
       </div>

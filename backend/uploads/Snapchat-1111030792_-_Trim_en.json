@@ -1,0 +1,104 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 2.78,
+      "text": "Everybody to the stand, let the shots go off",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 2.78,
+      "end": 4.54,
+      "text": "Ready to roll, ammo and all",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 4.54,
+      "end": 6.66,
+      "text": "This is that call to that duty motherfucker",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 6.66,
+      "end": 8.24,
+      "text": "Can I get that applause, boy?",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 8.4,
+      "end": 10.48,
+      "text": "Ain't nobody safe, ain't nobody safe",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 10.48,
+      "end": 13.44,
+      "text": "Ain't about what you make, it's about what you made of",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 13.44,
+      "end": 15.88,
+      "text": "This the big boy league, can you stay up?",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 8,
+      "start": 16.2,
+      "end": 18.36,
+      "text": "All you rappers bout to take a fuckin' pay cut",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 9,
+      "start": 18.36,
+      "end": 20.84,
+      "text": "All the drama, it was started by me",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 10,
+      "start": 20.84,
+      "end": 23.46,
+      "text": "Now I gotta show them how to lead",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 11,
+      "start": 23.46,
+      "end": 25.54,
+      "text": "To the death of nobody pre",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 12,
+      "start": 26.2,
+      "end": 28.08,
+      "text": "The last man standing, we gon' see",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

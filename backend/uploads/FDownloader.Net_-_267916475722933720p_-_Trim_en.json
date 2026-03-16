@@ -1,0 +1,64 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 7.54,
+      "text": "Don't even think that you should have any fear or that the members of this party should have any fear.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 8.5,
+      "end": 11.22,
+      "text": "God willing, we will handle all of them.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 11.64,
+      "end": 12.78,
+      "text": "All of them are capable.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 12.86,
+      "end": 15.06,
+      "text": "How long have you lived?",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 15.56,
+      "end": 18.1,
+      "text": "You are now 64 years old.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 18.76,
+      "end": 22.56,
+      "text": "Whether I live 80 years or 70 years, my husband knows that.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 22.56,
+      "end": 31.14,
+      "text": "And as long as I am alive, I would like to thank the parliament and all the new friends that have come to our parliament.",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

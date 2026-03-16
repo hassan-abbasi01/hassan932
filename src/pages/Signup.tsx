@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Twitter, Instagram, Youtube, Scissors } from 'lucide-react';
+import { Eye, EyeOff, Twitter, Instagram, Youtube, Scissors, Sparkles } from 'lucide-react';
 import { z } from 'zod';
 
 const signupSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one capital letter')
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
   confirmPassword: z.string()
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
@@ -50,7 +53,8 @@ const Signup = () => {
     e.preventDefault();
     try {
       signupSchema.parse(formData);
-      const response = await fetch('http://localhost:5001/api/auth/register', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -84,7 +88,8 @@ const Signup = () => {
 
   // OAuth handlers
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5001/api/auth/google/login';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    window.location.href = `${API_URL}/auth/google/login`;
   };
 
   return (
@@ -266,12 +271,22 @@ const Signup = () => {
 
           {/* Footer */}
           <div className="bg-gray-50 px-8 py-6 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center">
+            <p className="text-xs text-gray-500 text-center mb-3">
               By creating an account, you agree to our{' '}
               <Link to="#" className="text-indigo-600 hover:text-indigo-500">Terms of Service</Link>{' '}
               and{' '}
               <Link to="#" className="text-indigo-600 hover:text-indigo-500">Privacy Policy</Link>.
             </p>
+            {/* Admin Login Link */}
+            <div className="pt-3 border-t border-gray-200">
+              <Link 
+                to="/admin/login"
+                className="flex items-center justify-center gap-2 text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors duration-300"
+              >
+                <Sparkles className="w-4 h-4" />
+                Admin Portal Access
+              </Link>
+            </div>
           </div>
         </div>
       </div>

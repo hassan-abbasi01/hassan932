@@ -1,0 +1,32 @@
+{
+  "language": "de",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 4.0,
+      "text": "Dies ist der Unterschied zwischen der Verwendung von Füllwörtern und der Nichtverwendung von Füllwörtern.",
+      "language": "de",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 4.0,
+      "end": 12.0,
+      "text": "Heute denke ich, dass ich ein Erdnussbutter-Sandwich essen werde.",
+      "language": "de",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 12.0,
+      "end": 18.0,
+      "text": "Heute denke ich, dass ich ein Erdnussbutter-Sandwich essen werde.",
+      "language": "de",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

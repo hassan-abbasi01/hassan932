@@ -1,0 +1,20 @@
+1
+00:00:00,000 --> 00:00:01,820
+I want to leave Berlin.
+
+2
+00:00:04,200 --> 00:00:06,480
+I won't let you leave the house again.
+
+3
+00:00:07,000 --> 00:00:08,320
+The judges have already decided.
+
+4
+00:00:09,220 --> 00:00:11,539
+Oh, I can do it.
+
+5
+00:00:11,960 --> 00:00:12,460
+He can.
+

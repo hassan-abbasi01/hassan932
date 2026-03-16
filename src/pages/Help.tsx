@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Search, 
   MessageCircle, 
@@ -16,7 +16,11 @@ import {
   Scissors,
   Type,
   Volume2,
-  Sparkles
+  Sparkles,
+  User,
+  CheckCircle2,
+  AlertCircle,
+  Zap
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ApiService } from '../services/api';
@@ -29,11 +33,26 @@ interface FAQ {
   category: string;
 }
 
-interface ChatMessage {
-  id: string;
+interface Response {
   message: string;
-  sender: 'user' | 'bot';
-  timestamp: Date;
+  responder_type: 'admin' | 'user';
+  responder_id: string;
+  responder_name: string;
+  timestamp: string;
+}
+
+interface SupportTicket {
+  _id: string;
+  subject: string;
+  description: string;
+  status: 'open' | 'pending' | 'closed';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  type: string;
+  created_at: string;
+  updated_at: string;
+  responses: Response[];
+  name: string;
+  email: string;
 }
 
 const Help = () => {
@@ -42,15 +61,6 @@ const Help = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      message: 'Hello! I\'m your SnipX assistant. How can I help you today?',
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
-  const [newMessage, setNewMessage] = useState('');
   const [supportForm, setSupportForm] = useState({
     name: user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : '',
     email: user?.email || '',
@@ -60,6 +70,17 @@ const Help = () => {
     type: 'bug'
   });
   const [isSubmittingTicket, setIsSubmittingTicket] = useState(false);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [showTicketList, setShowTicketList] = useState(true);
+
+  useEffect(() => {
+    if (activeTab === 'support' && isAuthenticated) {
+      fetchTickets();
+    }
+  }, [activeTab, isAuthenticated]);
 
   const faqs: FAQ[] = [
     {
@@ -149,56 +170,109 @@ const Help = () => {
       title: 'Automated Video Cutting',
       description: 'Use AI to automatically remove silences and improve pacing',
       duration: '7 min',
-      icon: <Scissors className="text-red-500" size={24} />
+      icon: <Zap className="text-orange-500" size={24} />
     }
   ];
 
+  // Filter FAQs based on search and category
   const filteredFAQs = faqs.filter(faq => {
     const matchesSearch = faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
+                          faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
+  const fetchTickets = async () => {
+    try {
+      const token = ApiService.getToken();
+      if (!token) {
+        console.log('No token found, skipping ticket fetch');
+        return;
+      }
+      
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/support/tickets`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      message: newMessage,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setChatMessages(prev => [...prev, userMessage]);
-
-    // Simulate bot response
-    setTimeout(() => {
-      const botResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        message: getBotResponse(newMessage),
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, botResponse]);
-    }, 1000);
-
-    setNewMessage('');
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Fetched tickets:', data);
+        setTickets(Array.isArray(data) ? data : []);
+      } else {
+        console.error('Failed to fetch tickets:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+    }
   };
 
-  const getBotResponse = (message: string): string => {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('upload') || lowerMessage.includes('video')) {
-      return 'To upload a video, go to the Editor page and drag & drop your file or click "Select Video". We support MP4, MOV, AVI, and MKV formats up to 500MB.';
-    } else if (lowerMessage.includes('subtitle') || lowerMessage.includes('caption')) {
-      return 'Our AI can generate subtitles in multiple languages including English, Urdu, Spanish, French, and German. You can also edit them after generation.';
-    } else if (lowerMessage.includes('processing') || lowerMessage.includes('time')) {
-      return 'Processing time typically takes 1-3 minutes per minute of video content, depending on the features you select.';
-    } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-      return 'SnipX offers flexible pricing plans. Please check our pricing page for detailed information about our plans and features.';
-    } else {
-      return 'I\'d be happy to help! You can ask me about video uploads, subtitle generation, processing times, or any other SnipX features. What would you like to know?';
+  const fetchTicketDetails = async (ticketId: string) => {
+    try {
+      const token = ApiService.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/support/tickets/${ticketId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Fetched ticket details:', data);
+        setSelectedTicket(data);
+      } else {
+        console.error('Failed to fetch ticket details:', response.status);
+        toast.error('Failed to load ticket details');
+      }
+    } catch (error) {
+      console.error('Error fetching ticket details:', error);
+      toast.error('Error loading ticket details');
+    }
+  };
+
+  const handleTicketClick = (ticket: SupportTicket) => {
+    setSelectedTicket(ticket);
+    setShowTicketList(false);
+    fetchTicketDetails(ticket._id);
+  };
+
+  const handleSendReply = async () => {
+    if (!replyMessage.trim() || !selectedTicket) return;
+
+    setSending(true);
+    try {
+      const token = ApiService.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/support/tickets/${selectedTicket._id}/reply`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: replyMessage.trim() })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Reply sent successfully:', data);
+        toast.success('Reply sent successfully');
+        setReplyMessage('');
+        
+        // Wait a moment for database to update, then refresh
+        setTimeout(async () => {
+          await fetchTicketDetails(selectedTicket._id);
+          await fetchTickets();
+        }, 300);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Failed to send reply:', response.status, errorData);
+        toast.error(errorData.error || 'Failed to send reply');
+      }
+    } catch (error) {
+      console.error('Error sending reply:', error);
+      toast.error('Failed to send reply');
+    } finally {
+      setSending(false);
     }
   };
 
@@ -227,12 +301,47 @@ const Help = () => {
         priority: 'medium',
         type: 'bug'
       });
+      
+      // Wait a moment for database to update, then refresh tickets and show list
+      setTimeout(async () => {
+        await fetchTickets();
+        setShowTicketList(true);
+      }, 500);
     } catch (error) {
       console.error('Error submitting support ticket:', error);
       toast.error('Failed to submit support ticket. Please try again.');
     } finally {
       setIsSubmittingTicket(false);
     }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const colors = {
+      open: 'bg-green-100 text-green-800',
+      pending: 'bg-yellow-100 text-yellow-800',
+      closed: 'bg-gray-100 text-gray-800'
+    };
+    return colors[status as keyof typeof colors] || colors.open;
+  };
+
+  const getPriorityBadge = (priority: string) => {
+    const colors = {
+      urgent: 'bg-red-100 text-red-800',
+      high: 'bg-orange-100 text-orange-800',
+      medium: 'bg-blue-100 text-blue-800',
+      low: 'bg-gray-100 text-gray-800'  
+    };
+    return colors[priority as keyof typeof colors] || colors.medium;
+  };
+
+  const formatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDate = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
   return (
@@ -281,7 +390,6 @@ const Help = () => {
             {[
               { id: 'faq', label: 'FAQ', icon: HelpCircle },
               { id: 'tutorials', label: 'Tutorials', icon: Book },
-              { id: 'chat', label: 'Live Chat', icon: MessageCircle },
               { id: 'support', label: 'Support Ticket', icon: Bug }
             ].map((tab, index) => (
               <button
@@ -414,101 +522,8 @@ const Help = () => {
             </div>
           )}
 
-          {activeTab === 'chat' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Live Chat Assistant</h2>
-                <div className="flex items-center text-green-600 animate-pulse-3d">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-ping"></div>
-                  <span className="text-sm font-medium">Online</span>
-                </div>
-              </div>
-
-              <div className="border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm shadow-lg animate-slide-up-3d">
-                <div className="h-96 overflow-y-auto p-6 space-y-4">
-                  {chatMessages.map((message, index) => (
-                    <div
-                      key={message.id}
-                      className={`flex animate-message-slide-3d ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <div
-                        className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-300 ${
-                          message.sender === 'user'
-                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                            : 'bg-white border border-gray-200 text-gray-900'
-                        }`}
-                      >
-                        <p className="text-sm">{message.message}</p>
-                        <p className={`text-xs mt-1 ${
-                          message.sender === 'user' ? 'text-purple-200' : 'text-gray-500'
-                        }`}>
-                          {message.timestamp.toLocaleTimeString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-gray-200 p-4 bg-gray-50/50 rounded-b-xl">
-                  <div className="flex space-x-3">
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                      placeholder="Type your message..."
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-                    />
-                    <button
-                      onClick={handleSendMessage}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                    >
-                      <Send size={16} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4 animate-slide-in-3d">
-                <h3 className="text-sm font-medium text-blue-900 mb-2">Quick Actions</h3>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    'How to upload a video?',
-                    'Subtitle generation help',
-                    'Processing time info',
-                    'Pricing information'
-                  ].map((action, index) => (
-                    <button
-                      key={action}
-                      onClick={() => setNewMessage(action)}
-                      className="text-xs bg-blue-100 text-blue-800 px-3 py-2 rounded-full hover:bg-blue-200 transition-all duration-300 transform hover:scale-105 animate-bounce-in-3d"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      {action}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
           {activeTab === 'support' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Submit Support Ticket</h2>
-                <div className="flex items-center space-x-4 text-sm text-gray-600">
-                  <div className="flex items-center animate-float-3d">
-                    <Mail size={16} className="mr-1" />
-                    support@snipx.com
-                  </div>
-                  <div className="flex items-center animate-float-3d-delayed">
-                    <Phone size={16} className="mr-1" />
-                    +1 (555) 123-4567
-                  </div>
-                </div>
-              </div>
-
               {!isAuthenticated ? (
                 <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6 text-center animate-slide-up-3d">
                   <div className="flex justify-center mb-4">
@@ -528,111 +543,337 @@ const Help = () => {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSupportSubmit} className="space-y-6 animate-form-reveal-3d">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="animate-slide-in-left-3d">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        value={supportForm.name}
-                        onChange={(e) => setSupportForm({...supportForm, name: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-                        required
-                      />
-                    </div>
-
-                    <div className="animate-slide-in-right-3d">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        value={supportForm.email}
-                        onChange={(e) => setSupportForm({...supportForm, email: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-                        required
-                      />
+                <>
+                  {/* Header with toggle buttons */}
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-2xl font-semibold text-gray-900">Support Tickets</h2>
+                    <div className="flex gap-2">
+                      {!showTicketList && (
+                        <button
+                          onClick={() => { setShowTicketList(true); setSelectedTicket(null); }}
+                          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                        >
+                          ← Back to List
+                        </button>
+                      )}
+                      {showTicketList && (
+                        <button
+                          onClick={() => setShowTicketList(false)}
+                          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                          + New Ticket
+                        </button>
+                      )}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="animate-slide-in-left-3d" style={{ animationDelay: '200ms' }}>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Issue Type
-                      </label>
-                      <select
-                        value={supportForm.type}
-                        onChange={(e) => setSupportForm({...supportForm, type: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-                      >
-                        <option value="bug">Bug Report</option>
-                        <option value="feature">Feature Request</option>
-                        <option value="account">Account Issue</option>
-                        <option value="billing">Billing Question</option>
-                        <option value="other">Other</option>
-                      </select>
+                  {/* Show Ticket List */}
+                  {showTicketList ? (
+                    <div className="space-y-4">
+                      {tickets.length === 0 ? (
+                        <div className="text-center py-12 bg-white/80 rounded-xl">
+                          <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                          <p className="text-gray-500 mb-4">No tickets yet</p>
+                          <button
+                            onClick={() => setShowTicketList(false)}
+                            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                          >
+                            Create Your First Ticket
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 gap-4">
+                          {tickets.map((ticket) => (
+                            <div
+                              key={ticket._id}
+                              onClick={() => handleTicketClick(ticket)}
+                              className="bg-white/80 rounded-xl p-6 border border-gray-200 hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1"
+                            >
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                    {ticket.subject}
+                                  </h3>
+                                  <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                                    {ticket.description}
+                                  </p>
+                                  <div className="flex flex-wrap gap-2">
+                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(ticket.status)}`}>
+                                      {ticket.status}
+                                    </span>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityBadge(ticket.priority)}`}>
+                                      {ticket.priority}
+                                    </span>
+                                    <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs flex items-center gap-1">
+                                      <Clock className="w-3 h-3" />
+                                      {formatDate(ticket.created_at)}
+                                    </span>
+                                    {ticket.responses && ticket.responses.length > 0 && (
+                                      <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs flex items-center gap-1">
+                                        <CheckCircle2 className="w-3 h-3" />
+                                        {ticket.responses.length} {ticket.responses.length === 1 ? 'reply' : 'replies'}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
+                  ) : selectedTicket ? (
+                    /* Show Conversation View */
+                    <div className="bg-white/90 rounded-xl border border-gray-200 overflow-hidden">
+                      {/* Ticket Header */}
+                      <div className="p-6 border-b border-gray-200 bg-gray-50">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{selectedTicket.subject}</h3>
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <User className="w-4 h-4" />
+                            {selectedTicket.name}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {formatDate(selectedTicket.created_at)}
+                          </div>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(selectedTicket.status)}`}>
+                            {selectedTicket.status}
+                          </span>
+                        </div>
+                      </div>
 
-                    <div className="animate-slide-in-right-3d" style={{ animationDelay: '200ms' }}>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Priority
-                      </label>
-                      <select
-                        value={supportForm.priority}
-                        onChange={(e) => setSupportForm({...supportForm, priority: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-                      >
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                        <option value="urgent">Urgent</option>
-                      </select>
+                      {/* Messages */}
+                      <div className="p-6 space-y-4 max-h-[400px] overflow-y-auto">
+                        {/* Initial Message */}
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                              <User className="w-5 h-5 text-purple-600" />
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <div className="bg-gray-100 rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-sm text-gray-900">You</span>
+                                <span className="text-xs text-gray-500">{formatTime(selectedTicket.created_at)}</span>
+                              </div>
+                              <p className="text-gray-800">{selectedTicket.description}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Responses */}
+                        {selectedTicket.responses && selectedTicket.responses.map((response, index) => (
+                          <div
+                            key={index}
+                            className={`flex gap-3 ${response.responder_type === 'admin' ? 'flex-row-reverse' : ''}`}
+                          >
+                            <div className="flex-shrink-0">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                response.responder_type === 'admin' ? 'bg-purple-600' : 'bg-purple-100'
+                              }`}>
+                                <User className={`w-5 h-5 ${
+                                  response.responder_type === 'admin' ? 'text-white' : 'text-purple-600'
+                                }`} />
+                              </div>
+                            </div>
+                            <div className="flex-1">
+                              <div className={`rounded-lg p-4 ${
+                                response.responder_type === 'admin' ? 'bg-purple-600 text-white' : 'bg-gray-100'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-semibold text-sm">
+                                    {response.responder_type === 'admin' ? 'Admin' : 'You'}
+                                  </span>
+                                  <span className={`text-xs ${
+                                    response.responder_type === 'admin' ? 'text-purple-100' : 'text-gray-500'
+                                  }`}>
+                                    {formatTime(response.timestamp)}
+                                  </span>
+                                </div>
+                                <p className={response.responder_type === 'admin' ? 'text-white' : 'text-gray-800'}>
+                                  {response.message}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Reply Input */}
+                      {selectedTicket.status !== 'closed' && (
+                        <div className="p-4 border-t border-gray-200 bg-gray-50">
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={replyMessage}
+                              onChange={(e) => setReplyMessage(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  handleSendReply();
+                                }
+                              }}
+                              placeholder="Type your reply..."
+                              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              disabled={sending}
+                            />
+                            <button
+                              onClick={handleSendReply}
+                              disabled={!replyMessage.trim() || sending}
+                              className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                            >
+                              {sending ? (
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                              ) : (
+                                <>
+                                  <Send className="w-4 h-4" />
+                                  Send
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {selectedTicket.status === 'closed' && (
+                        <div className="p-4 border-t border-gray-200 bg-yellow-50">
+                          <div className="flex items-center gap-2 text-yellow-800">
+                            <AlertCircle className="w-5 h-5" />
+                            <span className="text-sm font-medium">This ticket is closed.</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  ) : (
+                    /* Show New Ticket Form */
+                    <form onSubmit={handleSupportSubmit} className="space-y-6 animate-form-reveal-3d">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="animate-slide-in-left-3d">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Full Name
+                          </label>
+                          <input
+                            type="text"
+                            value={supportForm.name}
+                            onChange={(e) => setSupportForm({...supportForm, name: e.target.value})}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                            required
+                          />
+                        </div>
 
-                  <div className="animate-slide-up-3d" style={{ animationDelay: '300ms' }}>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Subject
-                    </label>
-                    <input
-                      type="text"
-                      value={supportForm.subject}
-                      onChange={(e) => setSupportForm({...supportForm, subject: e.target.value})}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-                      required
-                    />
-                  </div>
+                        <div className="animate-slide-in-right-3d">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Email Address
+                          </label>
+                          <input
+                            type="email"
+                            value={supportForm.email}
+                            onChange={(e) => setSupportForm({...supportForm, email: e.target.value})}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div className="animate-slide-up-3d" style={{ animationDelay: '400ms' }}>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      value={supportForm.description}
-                      onChange={(e) => setSupportForm({...supportForm, description: e.target.value})}
-                      rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg resize-none"
-                      placeholder="Please provide as much detail as possible about your issue..."
-                      required
-                    />
-                  </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="animate-slide-in-left-3d" style={{ animationDelay: '200ms' }}>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Issue Type
+                          </label>
+                          <select
+                            value={supportForm.type}
+                            onChange={(e) => setSupportForm({...supportForm, type: e.target.value})}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                          >
+                            <option value="bug">Bug Report</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="question">Question</option>
+                            <option value="account">Account Issue</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
 
-                  <div className="flex justify-end animate-slide-up-3d" style={{ animationDelay: '500ms' }}>
-                    <button
-                      type="submit"
-                      disabled={isSubmittingTicket}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-lg"
-                    >
-                      <FileText size={16} className="mr-2" />
-                      {isSubmittingTicket ? 'Submitting...' : 'Submit Ticket'}
-                    </button>
-                  </div>
-                </form>
+                        <div className="animate-slide-in-right-3d" style={{ animationDelay: '200ms' }}>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Priority
+                          </label>
+                          <select
+                            value={supportForm.priority}
+                            onChange={(e) => setSupportForm({...supportForm, priority: e.target.value})}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                          >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="animate-slide-up-3d" style={{ animationDelay: '300ms' }}>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Subject
+                        </label>
+                        <input
+                          type="text"
+                          value={supportForm.subject}
+                          onChange={(e) => setSupportForm({...supportForm, subject: e.target.value})}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                          required
+                        />
+                      </div>
+
+                      <div className="animate-slide-up-3d" style={{ animationDelay: '400ms' }}>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Description
+                        </label>
+                        <textarea
+                          value={supportForm.description}
+                          onChange={(e) => setSupportForm({...supportForm, description: e.target.value})}
+                          rows={6}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg resize-none"
+                          placeholder="Please provide as much detail as possible about your issue..."
+                          required
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-3 animate-slide-up-3d" style={{ animationDelay: '500ms' }}>
+                        <button
+                          type="button"
+                          onClick={() => setShowTicketList(true)}
+                          className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={isSubmittingTicket}
+                          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-lg"
+                        >
+                          <FileText size={16} className="mr-2" />
+                          {isSubmittingTicket ? 'Submitting...' : 'Submit Ticket'}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </>
               )}
 
               <div className="bg-gradient-to-r from-gray-50 to-slate-50 border border-gray-200 rounded-xl p-6 animate-slide-up-3d">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-gray-900">Support Contact</h3>
+                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <div className="flex items-center">
+                      <Mail size={16} className="mr-1" />
+                      support@snipx.com
+                    </div>
+                    <div className="flex items-center">
+                      <Phone size={16} className="mr-1" />
+                      +1 (555) 123-4567
+                    </div>
+                  </div>
+                </div>
                 <h3 className="text-sm font-medium text-gray-900 mb-4">Response Times</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   {[

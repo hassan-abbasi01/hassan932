@@ -1,0 +1,48 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 4.1,
+      "text": "The world is full of people, O Lord!",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 5.14,
+      "end": 8.7,
+      "text": "What a pleasure when my heart is at peace!",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 10.28,
+      "end": 12.14,
+      "text": "I run with excitement,",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 13.1,
+      "end": 16.02,
+      "text": "my heart searches for a peace",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 16.02,
+      "end": 18.32,
+      "text": "on which even a speech is spread.",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

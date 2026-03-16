@@ -99,7 +99,7 @@ const Hero = () => {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}>
               <Link 
-                to="/editor" 
+                to="/features" 
                 className="group bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center justify-center gap-3 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105"
               >
                 <Play size={20} className="group-hover:scale-110 transition-transform duration-300" />

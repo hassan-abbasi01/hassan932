@@ -1,0 +1,20 @@
+1
+00:00:00,000 --> 00:00:02,000
+¿Quieres que yo te quede en Berlín?
+
+2
+00:00:03,419 --> 00:00:06,780
+Si no te quedas fuera de Berlín, no lo haré de nuevo.
+
+3
+00:00:07,059 --> 00:00:08,800
+Los rostros ya se han despedido.
+
+4
+00:00:09,320 --> 00:00:10,839
+¡Ah, no! ¡Yo lo sé!
+
+5
+00:00:11,919 --> 00:00:12,359
+¡A ver!
+

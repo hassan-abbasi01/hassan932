@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:00:04,000
+Ésta es la diferencia entre usar palabras de relleno y no usar palabras de relleno.
+
+2
+00:00:04,000 --> 00:00:12,000
+Hoy creo que comeré un sándwich de mantequilla de maní.
+
+3
+00:00:12,000 --> 00:00:18,000
+Hoy creo que comeré un sándwich de mantequilla de maní.
+

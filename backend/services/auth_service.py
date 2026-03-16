@@ -35,13 +35,23 @@ class AuthService:
         return str(result.inserted_id)
 
     def login_user(self, email, password):
+        # **SECURITY**: Check if this email belongs to an admin account
+        # Admins should ONLY login through /api/admin/login
+        admins_collection = self.db.admins
+        admin_exists = admins_collection.find_one({"email": email})
+        if admin_exists:
+            raise ValueError("Admin accounts must login through the Admin Portal")
+        
         # Fetch raw user document
         user_doc = self.users.find_one({"email": email})
         if not user_doc:
             raise ValueError("Invalid email or password")
 
-        # Verify password
-        if not bcrypt.checkpw(password.encode('utf-8'), user_doc['password_hash']):
+        # Verify password — support both 'password_hash' (app.py) and 'password' (app_fast.py legacy)
+        stored_hash = user_doc.get('password_hash') or user_doc.get('password')
+        if not stored_hash:
+            raise ValueError("Invalid email or password")
+        if not bcrypt.checkpw(password.encode('utf-8'), stored_hash):
             raise ValueError("Invalid email or password")
 
         # Generate JWT

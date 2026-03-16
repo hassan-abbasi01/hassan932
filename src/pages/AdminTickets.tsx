@@ -66,7 +66,7 @@ const AdminTickets = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
@@ -78,7 +78,7 @@ const AdminTickets = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Support Tickets Admin</h1>
@@ -106,7 +106,7 @@ const AdminTickets = () => {
         )}
 
         {tickets.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-xl border border-white/20 p-12 text-center">
             <MessageSquare className="mx-auto text-gray-400 mb-4" size={48} />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No Support Tickets Yet</h3>
             <p className="text-gray-600">
@@ -114,7 +114,7 @@ const AdminTickets = () => {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-xl border border-white/20 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">
                 All Support Tickets ({tickets.length})
@@ -144,7 +144,7 @@ const AdminTickets = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {tickets.map((ticket) => (
-                    <tr key={ticket._id} className="hover:bg-gray-50">
+                    <tr key={ticket._id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{ticket.subject}</div>
                         <div className="text-sm text-gray-500 truncate max-w-xs">

@@ -1,0 +1,44 @@
+# Node modules
+node_modules
+npm-debug.log
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Build outputs
+dist
+build
+
+# Uploads (handled by volume mount)
+backend/uploads/*
+
+# Docs
+docs
+*.md

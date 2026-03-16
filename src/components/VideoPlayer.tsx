@@ -127,7 +127,9 @@ const VideoPlayer = ({ videoUrl, videoId, subtitles, onTimeUpdate }: VideoPlayer
       if (isPlaying) {
         videoRef.current.pause();
       } else {
-        videoRef.current.play();
+        videoRef.current.play().catch(() => {
+          // Silently ignore - video may still be loading
+        });
       }
       setIsPlaying(!isPlaying);
     }

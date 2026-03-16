@@ -10,6 +10,19 @@ class SupportService:
         self.db = db
         self.tickets = db.support_tickets
 
+    def _find_ticket_by_id(self, ticket_id):
+        """Find a ticket by ID, handling both string and ObjectId stored IDs"""
+        # Try as ObjectId first (proper format)
+        try:
+            ticket = self.tickets.find_one({"_id": ObjectId(ticket_id)})
+            if ticket:
+                return ticket
+        except Exception:
+            pass
+        # Fallback: try as string
+        ticket = self.tickets.find_one({"_id": ticket_id})
+        return ticket
+
     def create_ticket(self, user_id, data):
         """Create a new support ticket"""
         try:
@@ -34,7 +47,7 @@ class SupportService:
     def get_ticket(self, ticket_id):
         """Get a specific support ticket"""
         try:
-            ticket_data = self.tickets.find_one({"_id": ObjectId(ticket_id)})
+            ticket_data = self._find_ticket_by_id(ticket_id)
             if not ticket_data:
                 return None
             return SupportTicket.from_dict(ticket_data)
@@ -45,8 +58,14 @@ class SupportService:
     def get_user_tickets(self, user_id):
         """Get all tickets for a specific user"""
         try:
-            tickets = self.tickets.find({"user_id": ObjectId(user_id)}).sort("created_at", -1)
-            return [SupportTicket.from_dict(ticket).to_dict() for ticket in tickets]
+            # Query both ObjectId and string formats of user_id
+            tickets = self.tickets.find({
+                "$or": [
+                    {"user_id": ObjectId(user_id)},
+                    {"user_id": str(user_id)}
+                ]
+            }).sort("created_at", -1)
+            return [SupportTicket.from_dict(ticket).to_json() for ticket in tickets]
         except Exception as e:
             logger.error(f"Error fetching user tickets: {e}")
             return []
@@ -61,7 +80,7 @@ class SupportService:
                 query['priority'] = priority
                 
             tickets = self.tickets.find(query).sort("created_at", -1)
-            return [SupportTicket.from_dict(ticket).to_dict() for ticket in tickets]
+            return [SupportTicket.from_dict(ticket).to_json() for ticket in tickets]
         except Exception as e:
             logger.error(f"Error fetching all tickets: {e}")
             return []
@@ -74,30 +93,42 @@ class SupportService:
                 'updated_at': datetime.utcnow()
             }
             
+            # Try ObjectId first
             query = {"_id": ObjectId(ticket_id)}
-            if user_id:  # If user_id provided, ensure user owns the ticket
-                query["user_id"] = ObjectId(user_id)
+            if user_id:
+                query["$or"] = [{"user_id": ObjectId(user_id)}, {"user_id": str(user_id)}]
             
             result = self.tickets.update_one(query, {"$set": update_data})
+            
+            if result.modified_count == 0:
+                # Fallback: try string ID
+                query["_id"] = ticket_id
+                result = self.tickets.update_one(query, {"$set": update_data})
             
             if result.modified_count == 0:
                 raise ValueError("Ticket not found or unauthorized")
                 
             return True
             
+        except ValueError:
+            raise
         except Exception as e:
             logger.error(f"Error updating ticket status: {e}")
             raise ValueError(f"Failed to update ticket: {str(e)}")
 
-    def add_response(self, ticket_id, response, responder_type='admin'):
-        """Add a response to a ticket"""
+    def add_response(self, ticket_id, response_data):
+        """Add a response to a ticket
+        
+        Args:
+            ticket_id: Ticket ID
+            response_data: Dict with message, responder_type, responder_id, responder_name, timestamp
+        """
         try:
-            response_data = {
-                'message': response,
-                'responder_type': responder_type,  # 'admin' or 'user'
-                'timestamp': datetime.utcnow()
-            }
+            # Ensure timestamp exists
+            if 'timestamp' not in response_data:
+                response_data['timestamp'] = datetime.utcnow()
             
+            # Try ObjectId first, then string
             result = self.tickets.update_one(
                 {"_id": ObjectId(ticket_id)},
                 {
@@ -107,10 +138,22 @@ class SupportService:
             )
             
             if result.modified_count == 0:
+                # Fallback: try with string ID
+                result = self.tickets.update_one(
+                    {"_id": ticket_id},
+                    {
+                        "$push": {"responses": response_data},
+                        "$set": {"updated_at": datetime.utcnow()}
+                    }
+                )
+            
+            if result.modified_count == 0:
                 raise ValueError("Ticket not found")
                 
             return True
             
+        except ValueError:
+            raise
         except Exception as e:
             logger.error(f"Error adding response to ticket: {e}")
             raise ValueError(f"Failed to add response: {str(e)}")

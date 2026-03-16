@@ -1,0 +1,22 @@
+2026-02-22 22:35:53,905 - __main__ - INFO - \u2705 Connected to local MongoDB
+2026-02-22 22:35:53,909 - __main__ - INFO - 
+============================================================
+2026-02-22 22:35:53,914 - __main__ - INFO - BACKEND SERVER GPU STATUS
+2026-02-22 22:35:53,918 - __main__ - INFO - ============================================================
+2026-02-22 22:35:53,922 - __main__ - INFO - \u274c No GPU detected - Using CPU (slower)
+2026-02-22 22:35:53,926 - __main__ - INFO - ============================================================
+2026-02-22 22:35:55,292 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.100.9:5001
+2026-02-22 22:35:55,293 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-02-22 22:35:55,294 - werkzeug - INFO -  * Restarting with stat
+2026-02-22 22:36:04,608 - __main__ - INFO - \u2705 Connected to local MongoDB
+2026-02-22 22:36:04,609 - __main__ - INFO - 
+============================================================
+2026-02-22 22:36:04,609 - __main__ - INFO - BACKEND SERVER GPU STATUS
+2026-02-22 22:36:04,609 - __main__ - INFO - ============================================================
+2026-02-22 22:36:04,609 - __main__ - INFO - \u274c No GPU detected - Using CPU (slower)
+2026-02-22 22:36:04,610 - __main__ - INFO - ============================================================
+2026-02-22 22:36:04,624 - werkzeug - WARNING -  * Debugger is active!
+2026-02-22 22:36:04,628 - werkzeug - INFO -  * Debugger PIN: 850-284-200

@@ -65,14 +65,14 @@ const Profile = () => {
 
   const loadProfileData = async () => {
     try {
-      // Mock profile data - replace with actual API call
-      const mockProfile: UserProfile = {
+      // Use real user data from auth context
+      const profileData: UserProfile = {
         email: user?.email || 'demo@snipx.com',
         firstName: user?.firstName || 'Demo',
         lastName: user?.lastName || 'User',
-        joinDate: '2024-01-15',
-        totalVideos: 12,
-        totalProcessingTime: 145,
+        joinDate: user?.createdAt || new Date().toISOString(),
+        totalVideos: 0, // Will be updated after loading videos
+        totalProcessingTime: 0,
         preferences: {
           defaultLanguage: 'en',
           autoEnhanceAudio: true,
@@ -80,11 +80,11 @@ const Profile = () => {
           emailNotifications: false
         }
       };
-      setProfile(mockProfile);
+      setProfile(profileData);
       setEditForm({
-        firstName: mockProfile.firstName,
-        lastName: mockProfile.lastName,
-        email: mockProfile.email
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        email: profileData.email
       });
     } catch (error) {
       toast.error('Failed to load profile data');
@@ -97,8 +97,10 @@ const Profile = () => {
     setVideoLoading(true);
     try {
       console.log('Loading video history for user...');
+      console.log('Token available:', !!ApiService.getToken());
       const videos = await ApiService.getUserVideos();
       console.log('Raw video data from API:', videos);
+      console.log('Videos type:', typeof videos, 'isArray:', Array.isArray(videos));
       
       if (Array.isArray(videos) && videos.length > 0) {
         const processedVideos = videos.map((video: any) => {
@@ -117,13 +119,30 @@ const Profile = () => {
         });
         console.log('Processed video history:', processedVideos);
         setVideoHistory(processedVideos);
+        
+        // Update profile stats with real video count
+        if (profile) {
+          const totalDuration = processedVideos.reduce((acc, v) => acc + (v.duration || 0), 0);
+          setProfile({
+            ...profile,
+            totalVideos: processedVideos.length,
+            totalProcessingTime: Math.round(totalDuration)
+          });
+        }
       } else {
-        console.log('No videos found for user');
+        console.log('No videos found for user or empty array');
         setVideoHistory([]);
+        // Update profile stats
+        if (profile) {
+          setProfile({
+            ...profile,
+            totalVideos: 0,
+            totalProcessingTime: 0
+          });
+        }
       }
     } catch (error) {
       console.error('Failed to load video history:', error);
-      // Show error message but don't fall back to mock data
       toast.error('Failed to load video history. Please try again.');
       setVideoHistory([]);
     } finally {
@@ -379,7 +398,17 @@ const Profile = () => {
 
             {activeTab === 'history' && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Video History</h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Video History</h2>
+                  <button
+                    onClick={loadVideoHistory}
+                    disabled={videoLoading}
+                    className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-300 disabled:opacity-50"
+                  >
+                    <Clock size={16} className={`mr-2 ${videoLoading ? 'animate-spin' : ''}`} />
+                    {videoLoading ? 'Loading...' : 'Refresh'}
+                  </button>
+                </div>
                 
                 {videoLoading ? (
                   <div className="flex items-center justify-center py-12">
@@ -418,12 +447,19 @@ const Profile = () => {
                             style={{ animationDelay: `${index * 150}ms` }}
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div>
-                                <div className="text-sm font-medium text-gray-900">
-                                  {video.filename}
+                              <div className="flex items-center gap-3">
+                                <div className="w-16 h-10 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center overflow-hidden">
+                                  <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                  </svg>
                                 </div>
-                                <div className="text-sm text-gray-500">
-                                  {formatFileSize(video.size)} • {video.duration ? formatDuration(video.duration) : 'N/A'}
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900 max-w-[200px] truncate" title={video.filename}>
+                                    {video.filename}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {formatFileSize(video.size)} • {video.duration ? formatDuration(Math.round(video.duration)) : 'N/A'}
+                                  </div>
                                 </div>
                               </div>
                             </td>
@@ -433,6 +469,8 @@ const Profile = () => {
                                   ? 'bg-green-100 text-green-800'
                                   : video.status === 'processing'
                                   ? 'bg-yellow-100 text-yellow-800'
+                                  : video.status === 'uploaded'
+                                  ? 'bg-blue-100 text-blue-800'
                                   : 'bg-red-100 text-red-800'
                               }`}>
                                 {video.status}
@@ -440,14 +478,18 @@ const Profile = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex flex-wrap gap-1">
-                                {video.processedOptions?.map((option) => (
-                                  <span
-                                    key={option}
-                                    className="inline-flex px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full transform hover:scale-105 transition-all duration-300"
-                                  >
-                                    {option.replace('_', ' ')}
-                                  </span>
-                                ))}
+                                {video.processedOptions && video.processedOptions.length > 0 ? (
+                                  video.processedOptions.map((option) => (
+                                    <span
+                                      key={option}
+                                      className="inline-flex px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full transform hover:scale-105 transition-all duration-300"
+                                    >
+                                      {option.replace(/_/g, ' ')}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-xs text-gray-400">None</span>
+                                )}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -455,18 +497,63 @@ const Profile = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-3">
-                                {[
-                                  { icon: Eye, color: 'text-purple-600 hover:text-purple-900' },
-                                  { icon: Download, color: 'text-green-600 hover:text-green-900' },
-                                  { icon: Trash2, color: 'text-red-600 hover:text-red-900' }
-                                ].map((action, actionIndex) => (
-                                  <button 
-                                    key={actionIndex}
-                                    className={`${action.color} transform hover:scale-110 transition-all duration-300`}
-                                  >
-                                    <action.icon size={16} />
-                                  </button>
-                                ))}
+                                <button 
+                                  onClick={() => window.open(`/editor?video=${video.id}`, '_blank')}
+                                  className="text-purple-600 hover:text-purple-900 transform hover:scale-110 transition-all duration-300"
+                                  title="View Video"
+                                >
+                                  <Eye size={16} />
+                                </button>
+                                <button 
+                                  onClick={async () => {
+                                    try {
+                                      toast.loading('Preparing download...');
+                                      const response = await fetch(`http://localhost:5000/api/videos/${video.id}/download`, {
+                                        headers: {
+                                          'Authorization': `Bearer ${localStorage.getItem('token')}`
+                                        }
+                                      });
+                                      if (response.ok) {
+                                        const blob = await response.blob();
+                                        const url = window.URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = video.filename;
+                                        a.click();
+                                        window.URL.revokeObjectURL(url);
+                                        toast.dismiss();
+                                        toast.success('Download started!');
+                                      } else {
+                                        toast.dismiss();
+                                        toast.error('Download failed');
+                                      }
+                                    } catch (error) {
+                                      toast.dismiss();
+                                      toast.error('Download failed');
+                                    }
+                                  }}
+                                  className="text-green-600 hover:text-green-900 transform hover:scale-110 transition-all duration-300"
+                                  title="Download Video"
+                                >
+                                  <Download size={16} />
+                                </button>
+                                <button 
+                                  onClick={async () => {
+                                    if (confirm('Are you sure you want to delete this video?')) {
+                                      try {
+                                        await ApiService.deleteVideo(video.id);
+                                        toast.success('Video deleted successfully');
+                                        loadVideoHistory();
+                                      } catch (error) {
+                                        toast.error('Failed to delete video');
+                                      }
+                                    }
+                                  }}
+                                  className="text-red-600 hover:text-red-900 transform hover:scale-110 transition-all duration-300"
+                                  title="Delete Video"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
                               </div>
                             </td>
                           </tr>
@@ -483,79 +570,6 @@ const Profile = () => {
                 <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Settings & Preferences</h2>
                 
                 <div className="space-y-8">
-                  {/* Processing Preferences */}
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 shadow-lg border border-purple-100 animate-card-float-3d">
-                    <h3 className="text-lg font-medium text-purple-900 mb-6 flex items-center">
-                      <Settings className="mr-3" size={24} />
-                      Processing Preferences
-                    </h3>
-                    <div className="space-y-6">
-                      <div className="flex items-center justify-between animate-slide-in-left-3d">
-                        <div>
-                          <label className="text-sm font-medium text-purple-800">Default Language</label>
-                          <p className="text-sm text-purple-600">Default language for subtitle generation</p>
-                        </div>
-                        <select
-                          value={profile?.preferences.defaultLanguage}
-                          onChange={(e) => handlePreferenceChange('defaultLanguage', e.target.value)}
-                          className="px-4 py-2 border border-purple-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-                        >
-                          <option value="en">English</option>
-                          <option value="ur">Urdu</option>
-                          <option value="es">Spanish</option>
-                          <option value="fr">French</option>
-                        </select>
-                      </div>
-
-                      {[
-                        { key: 'autoEnhanceAudio', label: 'Auto Enhance Audio', desc: 'Automatically enhance audio quality' },
-                        { key: 'generateThumbnails', label: 'Generate Thumbnails', desc: 'Automatically generate video thumbnails' }
-                      ].map((setting, index) => (
-                        <div 
-                          key={setting.key}
-                          className="flex items-center justify-between animate-slide-in-right-3d"
-                          style={{ animationDelay: `${index * 100}ms` }}
-                        >
-                          <div>
-                            <label className="text-sm font-medium text-purple-800">{setting.label}</label>
-                            <p className="text-sm text-purple-600">{setting.desc}</p>
-                          </div>
-                          <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={profile?.preferences[setting.key as keyof typeof profile.preferences] as boolean}
-                              onChange={(e) => handlePreferenceChange(setting.key, e.target.checked)}
-                              className="sr-only peer"
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600 transform hover:scale-105 transition-all duration-300"></div>
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Notifications */}
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 shadow-lg border border-blue-100 animate-card-float-3d" style={{ animationDelay: '200ms' }}>
-                    <h3 className="text-lg font-medium text-blue-900 mb-6">Notifications</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between animate-slide-in-3d">
-                        <div>
-                          <label className="text-sm font-medium text-blue-800">Email Notifications</label>
-                          <p className="text-sm text-blue-600">Receive email updates about processing status</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={profile?.preferences.emailNotifications}
-                            onChange={(e) => handlePreferenceChange('emailNotifications', e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 transform hover:scale-105 transition-all duration-300"></div>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Danger Zone */}
                   <div className="bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl p-8 shadow-lg animate-slide-up-3d">
                     <h3 className="text-lg font-medium text-red-900 mb-6 flex items-center">
