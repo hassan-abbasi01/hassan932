@@ -316,7 +316,7 @@ const Features = () => {
       
       if (validTabs.includes(tabParam)) {
         setActiveTab(tabParam);
-        logToConsole(`Navigated to ${tabParam} tab from external link`);
+        logToConsole(`Mapsd to ${tabParam} tab from external link`);
         
         // Scroll to middle of the page after content is rendered
         setTimeout(() => {
@@ -1405,8 +1405,8 @@ Automatisch generiert von SnipX AI`
     }
   };
 
-  // FIXED: Proper download functionality
-  const handleDownloadVideo = async () => {
+  // FIXED: Proper download functionality using window.open
+  const handleDownloadVideo = () => {
     if (!uploadedVideoId) {
       toast.error('No video available for download');
       return;
@@ -1414,19 +1414,10 @@ Automatisch generiert von SnipX AI`
 
     try {
       logToConsole('Starting video download...', 'info');
-      
-      // Use ApiService for automatic API URL detection and fallback
-      const blob = await ApiService.downloadVideo(uploadedVideoId);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `enhanced_${selectedFile?.name || videoData?.filename || 'video.mp4'}`;
-      
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
+      const token = ApiService.getToken();
+      const apiUrl = ApiService.getCurrentApiUrl();
+      const downloadUrl = `${apiUrl}/videos/${uploadedVideoId}/download?token=${token}&ngrok-skip-browser-warning=true`;
+      window.open(downloadUrl, '_blank');
       logToConsole('Video download started successfully!', 'success');
       toast.success('Enhanced video download started!');
     } catch (error) {
@@ -1462,14 +1453,14 @@ Automatisch generiert von SnipX AI`
     }
   };
 
-  const handleDownloadThumbnail = async () => {
+  const handleDownloadThumbnail = () => {
     if (!generatedThumbnail) {
       toast.error('No thumbnail to download');
       return;
     }
     
     try {
-      logToConsole('Downloading thumbnail...');
+      logToConsole('Downloading thumbnail via direct link...');
 
       // If it's already a data URL (demo mode), download directly
       if (generatedThumbnail.startsWith('data:')) {
@@ -1483,26 +1474,10 @@ Automatisch generiert von SnipX AI`
         return;
       }
 
-      // Fetch the already-displayed thumbnail URL (has token baked in as query param)
-      const response = await fetch(generatedThumbnail);
-      
-      if (!response.ok) {
-        throw new Error(`Server returned ${response.status}`);
-      }
-      
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `thumbnail-${Date.now()}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }, 100);
-      
+      const token = ApiService.getToken();
+      const apiUrl = ApiService.getCurrentApiUrl();
+      const downloadUrl = `${apiUrl}/videos/${uploadedVideoId}/thumbnail/download?token=${token}&ngrok-skip-browser-warning=true`;
+      window.open(downloadUrl, '_blank');
       logToConsole('Thumbnail downloaded successfully!', 'success');
       toast.success('Thumbnail downloaded!');
     } catch (error) {
@@ -2185,20 +2160,13 @@ Automatisch generiert von SnipX AI`
                   {/* Download button — shown after summarization completes */}
                   {uploadedVideoId && videoData?.outputs?.condensed_video && (
                     <button
-                      onClick={async () => {
+                      onClick={() => {
                         try {
-                          const token = localStorage.getItem('token');
-                          const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}/videos/${uploadedVideoId}/download/summarized`;
-                          toast.loading('Preparing download...');
-                          const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-                          if (!res.ok) throw new Error(`Server returned ${res.status}`);
-                          const blob = await res.blob();
-                          const a = document.createElement('a');
-                          a.href = URL.createObjectURL(blob);
-                          a.download = `summarized_video.mp4`;
-                          document.body.appendChild(a);
-                          a.click();
-                          a.remove();
+                          const token = ApiService.getToken();
+                          const apiUrl = ApiService.getCurrentApiUrl();
+                          const downloadUrl = `${apiUrl}/videos/${uploadedVideoId}/download/summarized?token=${token}&ngrok-skip-browser-warning=true`;
+                          toast.loading('Starting download...');
+                          window.open(downloadUrl, '_blank');
                           toast.dismiss();
                           toast.success('Download started!');
                         } catch (e) {

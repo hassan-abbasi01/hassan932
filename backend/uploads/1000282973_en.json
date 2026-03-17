@@ -1,0 +1,104 @@
+{
+  "language": "en",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 4.38,
+      "text": "Jeete ne jote nafiq ko jote ki koo ki koo hai ki koo hai ki koo hai hai koi kathochhoke hokar nao hai",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 2,
+      "start": 4.38,
+      "end": 5.8,
+      "text": "you will not be found anywhere",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 3,
+      "start": 5.8,
+      "end": 8.94,
+      "text": "Now is the happiest moment in life",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 4,
+      "start": 8.94,
+      "end": 10.94,
+      "text": "And who is the friend of ours?",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 5,
+      "start": 10.94,
+      "end": 13.540000000000001,
+      "text": "when the missile fired",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 6,
+      "start": 13.540000000000001,
+      "end": 16.12,
+      "text": "six more angels",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 7,
+      "start": 16.12,
+      "end": 18.12,
+      "text": "It was a pleasure to touch a sexy girl.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 8,
+      "start": 18.12,
+      "end": 19.12,
+      "text": "when",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 9,
+      "start": 19.12,
+      "end": 23.62,
+      "text": "The cow came out in the tusks and opened a slit.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 10,
+      "start": 23.62,
+      "end": 25.2,
+      "text": "I am glad that",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 11,
+      "start": 25.2,
+      "end": 27.1,
+      "text": "We won because of the efforts we made.",
+      "language": "en",
+      "style": "clean"
+    },
+    {
+      "id": 12,
+      "start": 27.1,
+      "end": 29.8,
+      "text": "That work was a holy hunter of Allah",
+      "language": "en",
+      "style": "clean"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

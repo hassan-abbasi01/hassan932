@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:02:38,196
+Welcome to this video demonstration. This
+
+2
+00:02:38,196 --> 00:05:16,393
+is an example of English subtitles
+
+3
+00:05:16,393 --> 00:07:54,590
+generated automatically by SnipX AI.
+

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { 
   Search, 
   MessageCircle, 
@@ -9,11 +10,9 @@ import {
   Mail, 
   Clock,
   ChevronDown,
-  ChevronRight,
   Bug,
   FileText,
   Video,
-  Scissors,
   Type,
   Volume2,
   Sparkles,
